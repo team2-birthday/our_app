@@ -12,7 +12,7 @@ import HelloWorld from "@/components/HelloWorld.vue"
 import RegisterCircle from "@/components/RegisterCircle.vue"
 
 export default {
-  name: "Home",
+  name: "HomeView",
   components: {
     HelloWorld,
     RegisterCircle,
