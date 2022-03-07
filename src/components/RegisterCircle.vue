@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { setDoc, doc } from "firebase/firestore";
-import { db } from "@/firebase.js";
+import { collection, setDoc, doc } from "firebase/firestore"
+import { db } from "@/firebase.js"
 export default {
   data() {
     return {
@@ -14,13 +14,13 @@ export default {
       number: 0,
       places: ["公園", "体育館"],
       text: "aa",
-      name: "テニス",
+      name: "サッカー",
       universityList: [],
-    };
+    }
   },
   methods: {
     resisterCircle() {
-      setDoc(doc(db, "university", "福岡大学"), {
+      setDoc(doc(collection(db, 'univ', "福岡大学","circle"), this.name), {
         number: this.number,
         name: this.name,
         dates: this.dates,
@@ -29,7 +29,7 @@ export default {
       });
     },
   },
-};
+}
 </script>
 
 <style></style>
