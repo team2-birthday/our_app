@@ -20,13 +20,13 @@ export default {
   },
   methods: {
     resisterCircle() {
-      setDoc(doc(collection(db, 'univ', "福岡大学","circle"), this.name), {
+      setDoc(doc(collection(db, "univ", "福岡大学", "circle"), this.name), {
         number: this.number,
         name: this.name,
         dates: this.dates,
         places: this.places,
         text: this.text,
-      });
+      })
     },
   },
 }
