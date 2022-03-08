@@ -14,7 +14,8 @@ export default {
   },
   methods: {},
   created: async function () {
-    const snapshot = await getDocs(collection(db, "univ"))
+    const id = "福岡大学"
+    const snapshot = await getDocs(collection(db, "univ", id, "circle"))
     await snapshot.forEach((doc) => {
       this.circle_data.push({
         id: doc.id,
