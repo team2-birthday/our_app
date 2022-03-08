@@ -10,7 +10,13 @@
     </div>
     <div>
       説明文
-      <input type="text" v-model="text" />
+      <textarea
+        type="text"
+        v-model="text"
+        cols="30"
+        rows="20"
+        class="explanation"
+      />
     </div>
     <div>
       活動場所
@@ -67,6 +73,7 @@ export default {
           text: this.text,
         }
       )
+      this.places.splice(0)
     },
   },
 }
@@ -79,5 +86,18 @@ export default {
 }
 .place-delete-btn:hover {
   background-color: #03d1f5;
+}
+
+.explanation {
+  resize: none;
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #999;
+  box-sizing: border-box;
+  background-color: white;
+  margin: 0.5em 0;
+  line-height: 1.5;
+  font-family: Century;
 }
 </style>
