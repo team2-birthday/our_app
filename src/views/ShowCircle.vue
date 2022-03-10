@@ -1,6 +1,12 @@
 <template>
-  <div>
-    {{ circle_data }}
+  <div class="block" v-for="data in circle_data" v-bind:key="data">
+    <div class="name">{{ data.name }}</div>
+    <div>人数：{{ data.number }}人</div>
+    <div>{{ data.text }}</div>
+    <div>開催日程：場所</div>
+    <div v-for="(day, index) in data.date" v-bind:key="day">
+      {{ day }}:{{ data.place[index] }}
+    </div>
   </div>
 </template>
 <script>
@@ -25,4 +31,11 @@ export default {
   },
 }
 </script>
-<style></style>
+<style>
+.block {
+  /* display: flex; */
+  border: solid 2px black;
+  border-radius: 5px;
+  text-align: center;
+}
+</style>
