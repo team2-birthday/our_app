@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div v-if="registerComplete">
+    <div>登録が完了しました</div>
+    <div>下のリンクから戻って下さい</div>
+    <router-link to="/">home</router-link>
+  </div>
+  <div v-else>
     <div>
       学校名
       <select name="university" id="university" v-model="universityKey">
@@ -15,11 +20,11 @@
     </div>
     <div>
       サークル名
-      <input type="text" v-model="circleName" />
+      <input type="text" v-model="circleName" placeholder="サークル名" />
     </div>
     <div>
-      総数
-      <input type="number" v-model="number" />
+      サークルの所属している人数
+      <input type="number" v-model="number" placeholder="人数" />
     </div>
     <div>
       説明文
@@ -29,12 +34,13 @@
         cols="30"
         rows="10"
         class="explanation"
+        placeholder="ここにサークルの詳細を入力してください"
       />
     </div>
     <div>
       活動場所
       <div>
-        <input type="text" v-model="location" />
+        <input type="text" v-model="location" placeholder="活動場所" />
         <button v-on:click="placesPush">活動場所登録</button>
       </div>
       現在登録した活動場所（削除可能）
@@ -45,7 +51,9 @@
         </button>
       </div>
     </div>
-    <button v-on:click="resisterCircle">登録</button>
+    <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
+      登録
+    </button>
   </div>
 </template>
 
@@ -862,6 +870,7 @@ export default {
       ],
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       location: "", //活動場所をpushする変数
+      registerComplete: false, //サークルの登録したかどうかを確かめる変数
     }
   },
   methods: {
@@ -875,7 +884,7 @@ export default {
       const i = this.places.indexOf(place)
       this.places.splice(i, 1)
     },
-    resisterCircle() {
+    registerCircle() {
       setDoc(
         doc(
           collection(db, "univ", this.universityKey, "circle"),
@@ -888,11 +897,26 @@ export default {
           text: this.text,
         }
       )
-      alert("登録が完了しました。")
       this.number = ""
       this.circleName = ""
       this.places.splice(0)
       this.text = ""
+      this.registerComplete = true
+    },
+  },
+  computed: {
+    registerJudge() {
+      if (
+        this.universityKey === "" ||
+        this.number <= 0 ||
+        this.circleName === "" ||
+        this.text === "" ||
+        this.places.length === 0
+      ) {
+        return true
+      } else {
+        return false
+      }
     },
   },
 }
