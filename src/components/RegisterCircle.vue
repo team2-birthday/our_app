@@ -6,8 +6,13 @@
   </div>
   <div v-else>
     <div>
-      学校名
-      <select name="university" id="university" v-model="universityKey">
+      <div>学校名</div>
+      <select
+        name="university"
+        id="university"
+        v-model="universityKey"
+        required
+      >
         <option value="">--学校名を選んでください--</option>
         <option
           v-for="(university, index) in universityList"
@@ -17,17 +22,25 @@
           {{ university }}
         </option>
       </select>
+      <div class="error-message">※ 入力必須です</div>
     </div>
     <div>
-      サークル名
-      <input type="text" v-model="circleName" placeholder="サークル名" />
+      <div>サークル名</div>
+      <input
+        type="text"
+        v-model="circleName"
+        placeholder="サークル名"
+        required
+      />
+      <div class="error-message">※ 入力必須です</div>
     </div>
     <div>
       サークルの所属している人数
-      <input type="number" v-model="number" placeholder="人数" />
+      <input type="number" v-model="number" placeholder="人数" required />
+      <div class="error-message">※ 入力必須です</div>
     </div>
     <div>
-      説明文
+      <div>説明文</div>
       <textarea
         type="text"
         v-model="text"
@@ -35,12 +48,14 @@
         rows="10"
         class="explanation"
         placeholder="ここにサークルの詳細を入力してください"
+        required
       />
+      <div class="error-message">※ 入力必須です</div>
     </div>
     <div>
       活動場所
       <div>
-        <input type="text" v-model="location" placeholder="活動場所" />
+        <input type="text" v-model="location" placeholder="活動場所" required />
         <button v-on:click="placesPush">活動場所登録</button>
       </div>
       現在登録した活動場所（削除可能）
@@ -923,12 +938,32 @@ export default {
 </script>
 
 <style>
+.error-message {
+  font-size: 12px;
+  color: #ff7676;
+  display: none; /* 非表示に */
+}
+/* :invalid時だけ隣の要素を表示 */
+input:invalid + .error-message {
+  display: block;
+}
+
+/* :invalid時だけ隣の要素を表示 */
+textarea:invalid + .error-message {
+  display: block;
+}
+
+/* :invalid時だけ隣の要素を表示 */
+select:invalid + .error-message {
+  display: block;
+}
+
 .place-delete-btn {
   border: solid 1px black;
   background-color: white;
 }
 .place-delete-btn:hover {
-  background-color: #03d1f5;
+  background-color: red;
 }
 
 .explanation {
