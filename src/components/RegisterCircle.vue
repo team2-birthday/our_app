@@ -44,13 +44,24 @@
       <textarea
         type="text"
         v-model="text"
-        cols="30"
         rows="10"
         class="explanation"
         placeholder="ここにサークルの詳細を入力してください"
         required
       />
       <div class="error-message">※ 入力必須です</div>
+    </div>
+    <div>
+      活動日程
+      <div>
+        <input type="date" v-model="schedule" required />
+        <button v-on:click="datesPush">日程登録</button>
+      </div>
+      現在登録した日程（削除可能）
+      <div v-for="(date, index) in dates" v-bind:key="index">
+        {{ date }}
+        <button v-on:click="dateDelete(index)" class="delete-btn">削除</button>
+      </div>
     </div>
     <div>
       活動場所
@@ -61,9 +72,7 @@
       現在登録した活動場所（削除可能）
       <div v-for="(place, index) in places" v-bind:key="index">
         {{ place }}
-        <button v-on:click="placeDelete(index)" class="place-delete-btn">
-          削除
-        </button>
+        <button v-on:click="placeDelete(index)" class="delete-btn">削除</button>
       </div>
     </div>
     <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
@@ -885,10 +894,22 @@ export default {
       ],
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       location: "", //活動場所をpushする変数
+      schedule: "", //活動日程をpushする変数
       registerComplete: false, //サークルの登録したかどうかを確かめる変数
     }
   },
   methods: {
+    datesPush() {
+      if (this.schedule != "") {
+        this.dates.push(this.schedule)
+        //昇順に並べる
+        this.dates = [...this.dates].sort((a, b) => new Date(a) - new Date(b))
+      }
+      this.schedule = ""
+    },
+    dateDelete(date) {
+      this.dates.splice(date, 1)
+    },
     placesPush() {
       if (this.location != "") {
         this.places.push(this.location)
@@ -896,8 +917,7 @@ export default {
       this.location = ""
     },
     placeDelete(place) {
-      const i = this.places.indexOf(place)
-      this.places.splice(i, 1)
+      this.places.splice(place, 1)
     },
     registerCircle() {
       setDoc(
@@ -908,12 +928,14 @@ export default {
         {
           number: this.number,
           name: this.circleName,
+          dates: this.dates,
           places: this.places,
           text: this.text,
         }
       )
       this.number = ""
       this.circleName = ""
+      this.dates.splice(0)
       this.places.splice(0)
       this.text = ""
       this.registerComplete = true
@@ -926,6 +948,7 @@ export default {
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
+        this.dates === 0 ||
         this.places.length === 0
       ) {
         return true
@@ -958,18 +981,18 @@ select:invalid + .error-message {
   display: block;
 }
 
-.place-delete-btn {
+.delete-btn {
   border: solid 1px black;
   background-color: white;
 }
-.place-delete-btn:hover {
+.delete-btn:hover {
   background-color: red;
 }
 
 .explanation {
   resize: none;
   display: inline-block;
-  width: 100%;
+  width: 80%;
   padding: 10px;
   border: 1px solid #999;
   box-sizing: border-box;
