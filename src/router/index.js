@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import ShowCircle from "../views/ShowCircle.vue"
+import RegisterCircleView from "@/views/RegisterCircleView.vue"
+
 const routes = [
   {
     path: "/",
@@ -17,8 +19,13 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
-    path: "/showcircle",
-    name: "showcircle",
+    path: "/registerCircle",
+    name: "registerCircle",
+    component: RegisterCircleView,
+  },
+  {
+    path: "/showCircle",
+    name: "showCircle",
     component: ShowCircle,
   },
 ]
