@@ -5,8 +5,8 @@
     <router-link to="/about">About</router-link> |
     <router-link to="/showcircle">show</router-link> |
     <router-link to="/registerCircle">サークル登録</router-link> |
-    <router-link to="/circleLogin"
-      >自分の所属しているサークルにログイン</router-link
+    <router-link to="/userCircleRegister"
+      >自分の所属しているサークルを登録</router-link
     >
   </nav>
   <router-view />

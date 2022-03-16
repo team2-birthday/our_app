@@ -1,13 +1,15 @@
 <template>
-  <CircleLogin v-bind:universityList="universityList"></CircleLogin>
+  <UserCircleRegister
+    v-bind:universityList="universityList"
+  ></UserCircleRegister>
 </template>
 
 <script>
-import CircleLogin from "@/components/CircleLogin.vue"
+import UserCircleRegister from "@/components/UserCircleRegister.vue"
 export default {
-  name: "circleLogin",
+  name: "userCircleRegister",
   components: {
-    CircleLogin,
+    UserCircleRegister,
   },
   data() {
     return {

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import ShowCircle from "../views/ShowCircle.vue"
 import RegisterCircleView from "@/views/RegisterCircleView.vue"
-import CircleLoginView from "@/views/CircleLoginView.vue"
+import UserCircleRegisterView from "@/views/UserCircleRegisterView.vue"
 
 const routes = [
   {
@@ -30,9 +30,9 @@ const routes = [
     component: ShowCircle,
   },
   {
-    path: "/circleLogin",
-    name: "circleLogin",
-    component: CircleLoginView,
+    path: "/userCircleRegister",
+    name: "userCircleRegister",
+    component: UserCircleRegisterView,
   },
 ]
 
