@@ -89,7 +89,7 @@ export default {
             this.circleKey.name
           ),
           {
-            member: this.circleKey.memberData,
+            memberData: this.circleKey.memberData,
           }
         )
       }
