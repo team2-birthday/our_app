@@ -6,6 +6,7 @@
   </div>
   <div v-else>
     <div>
+      <div>登録前にログインしてください</div>
       <div>学校名</div>
       <select
         name="university"
@@ -82,6 +83,7 @@
 </template>
 
 <script>
+import { getAuth } from "firebase/auth"
 import { collection, setDoc, doc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
@@ -102,6 +104,7 @@ export default {
       location: "", //活動場所をpushする変数
       schedule: "", //活動日程をpushする変数
       registerComplete: false, //サークルの登録したかどうかを確かめる変数
+      memberData: [], //会員のデータを格納する変数
     }
   },
   methods: {
@@ -126,25 +129,36 @@ export default {
       this.places.splice(place, 1)
     },
     registerCircle() {
-      setDoc(
-        doc(
-          collection(db, "univ", this.universityKey, "circle"),
-          this.circleName
-        ),
-        {
-          number: this.number,
-          name: this.circleName,
-          dates: this.dates,
-          places: this.places,
-          text: this.text,
-        }
-      )
-      this.number = ""
-      this.circleName = ""
-      this.dates.splice(0)
-      this.places.splice(0)
-      this.text = ""
-      this.registerComplete = true
+      const auth = getAuth()
+      const user = auth.currentUser
+      if (user === null) {
+        alert("ログインしてから登録して下さい。")
+      } else {
+        this.memberData.push({
+          userName: user.displayName,
+          usermail: user.email,
+        })
+        setDoc(
+          doc(
+            collection(db, "univ", this.universityKey, "circle"),
+            this.circleName
+          ),
+          {
+            number: this.number,
+            name: this.circleName,
+            dates: this.dates,
+            places: this.places,
+            text: this.text,
+            memberData: this.memberData,
+          }
+        )
+        this.number = ""
+        this.circleName = ""
+        this.dates.splice(0)
+        this.places.splice(0)
+        this.text = ""
+        this.registerComplete = true
+      }
     },
   },
   computed: {
@@ -154,7 +168,7 @@ export default {
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
-        this.dates === 0 ||
+        this.dates.length === 0 ||
         this.places.length === 0
       ) {
         return true

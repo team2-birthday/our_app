@@ -77,15 +77,19 @@ export default {
       const auth = getAuth()
       const user = auth.currentUser
       if (user !== null) {
+        this.circleKey.memberData.push({
+          userName: user.displayName,
+          usermail: user.email,
+        })
         console.log(user)
-        console.log(this.circleKey.name)
+        console.log(this.circleKey.memberData[0].userName)
         updateDoc(
           doc(
             collection(db, "univ", this.universityKey, "circle"),
             this.circleKey.name
           ),
           {
-            member: user.displayName,
+            member: this.circleKey.memberData,
           }
         )
       }
