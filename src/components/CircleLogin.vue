@@ -52,40 +52,47 @@
     </div>
   </div>
   <div v-else-if="userCheck === true && registerCircleCheck == true">
-    <div>サークルログイン</div>
-    <div>学校名</div>
-    <select
-      name="university"
-      id="university"
-      v-on:click="selectCircle"
-      v-model="universityKey"
-      required
-    >
-      <option value="">--学校名を選んでください--</option>
-      <option
-        v-for="(university, index) in universityList"
-        v-bind:key="index"
-        v-bind:value="university"
+    <div v-if="loginComplete">
+      <div>登録完了しました。</div>
+      <div>下のリンクから戻って下さい</div>
+      <router-link to="/">home</router-link>
+    </div>
+    <div v-else>
+      <div>サークルログイン</div>
+      <div>学校名</div>
+      <select
+        name="university"
+        id="university"
+        v-on:click="selectCircle"
+        v-model="universityKey"
+        required
       >
-        {{ university }}
-      </option>
-    </select>
-    <div class="error-message">※ 入力必須です</div>
-    <div>サークル名</div>
-    <select name="circle" id="circle" v-model="circleKey">
-      <option value="" selected>
-        --自分が登録するサークル名を選んでください--
-      </option>
-      <option
-        v-for="(registerCircle, index) in registerCircleList"
-        v-bind:key="index"
-        v-bind:value="registerCircle"
-      >
-        {{ registerCircle.name }}
-      </option>
-    </select>
-    <div>
-      <button v-on:click="userCircleLogin">サークルログイン</button>
+        <option value="">--学校名を選んでください--</option>
+        <option
+          v-for="(university, index) in universityList"
+          v-bind:key="index"
+          v-bind:value="university"
+        >
+          {{ university }}
+        </option>
+      </select>
+      <div class="error-message">※ 入力必須です</div>
+      <div>サークル名</div>
+      <select name="circle" id="circle" v-model="circleKey">
+        <option value="" selected>
+          --自分が登録するサークル名を選んでください--
+        </option>
+        <option
+          v-for="(registerCircle, index) in registerCircleList"
+          v-bind:key="index"
+          v-bind:value="registerCircle"
+        >
+          {{ registerCircle.name }}
+        </option>
+      </select>
+      <div>
+        <button v-on:click="userCircleLogin">サークルログイン</button>
+      </div>
     </div>
   </div>
 </template>
@@ -105,9 +112,11 @@ export default {
     return {
       circleLoginState: false, //サークルログインができたかどうかを判別する変数
       circleLoginName: "", //どのサークルにログインしたのかを確認する変数
+      selectUniversity: "", //どの大学を選んでいるのかを確認する変数
       userCheck: false, //ユーザーがどのサークルに所属しているのかを登録したか確認する変数
       registerCircleCheck: false, //どのサークルに所属しているのかを登録したか確認する変数
       registerComplete: false, //どのサークルに所属しているのかを登録が完了したのか判別する変数
+      loginComplete: false, //サークルログインが完了したかどうかを判別する変数
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       circleKey: "", //現在どこのサークルがselectされているのかを示す変数
       registerCircleList: [],
@@ -136,25 +145,34 @@ export default {
         })
       }
     },
+    //サークルログインする関数
     userCircleLogin() {
       const auth = getAuth()
       const user = auth.currentUser
-      for (let i = 0; i < this.circleKey.memberData.length; i++) {
-        if (
-          this.circleKey.memberData[i].userName === user.displayName &&
-          this.circleKey.memberData[i].usermail === user.email
-        ) {
-          this.circleLoginState = true
-          this.circleLoginName = this.circleKey.name
-          this.$emit(
-            "circleLoginData",
-            this.circleLoginState,
-            this.circleLoginName
-          )
-          break
+      if (user !== null) {
+        for (let i = 0; i < this.circleKey.memberData.length; i++) {
+          if (
+            this.circleKey.memberData[i].userName === user.displayName &&
+            this.circleKey.memberData[i].usermail === user.email
+          ) {
+            this.circleLoginState = true
+            this.circleLoginName = this.circleKey.name
+            this.selectUniversity = this.universityKey
+            this.$emit(
+              "circleLoginData",
+              this.circleLoginState,
+              this.circleLoginName,
+              this.selectUniversity
+            )
+            break
+          }
         }
+        this.loginComplete = true
+      } else {
+        alert("ユーザーログインしてください")
       }
     },
+    //ユーザーの情報をサークルに保存しておく関数
     userRegister() {
       const auth = getAuth()
       const user = auth.currentUser

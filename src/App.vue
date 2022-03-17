@@ -1,8 +1,10 @@
 <template>
   {{ circleLoginName }}
-  <UserLogin></UserLogin>
+  <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
   <div v-if="circleLogin">
-    <button v-on:click="circleLogout">サークルログアウト</button>
+    <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
+      サークルログアウト
+    </button>
   </div>
   <nav>
     <router-link to="/">Home</router-link> |
@@ -12,8 +14,17 @@
     <router-link to="/circleLogin"
       >自分の所属しているサークルにログイン</router-link
     >
+    <div class="circle-edit" v-if="circleLogin">
+      |
+      <router-link to="/circleEdit">サークル内容の編集</router-link>
+    </div>
   </nav>
-  <router-view v-on:circleLoginData="circleLoginDataMove" />
+  <router-view
+    v-on:circleEditing="circleEditing"
+    v-on:circleLoginData="circleLoginDataMove"
+    v-bind:circleLoginName="circleLoginName"
+    v-bind:universityName="universityName"
+  />
 </template>
 
 <script>
@@ -25,19 +36,29 @@ export default {
   },
   data() {
     return {
+      circleEditCheck: false, //サークル編集しているのかを確認する編集
       circleLogin: false,
-      cicleLoginName: "", //どこのサークルにログインしたかを表示する変数
+      circleLoginName: "", //どこのサークルにログインしたかを表示する変数
+      universityName: "", //どこの大学なのかを示す変数
     }
   },
   methods: {
-    circleLoginDataMove(currentCircleLogin, currentCircleLoginName) {
+    circleLoginDataMove(
+      currentCircleLogin,
+      currentCircleLoginName,
+      selectUniversity
+    ) {
       this.circleLogin = currentCircleLogin
       this.circleLoginName = currentCircleLoginName
+      this.universityName = selectUniversity
     },
     circleLogout() {
       this.circleLogin = false
       this.circleLoginName = ""
-      console.log(this.circleLoginName)
+      this.universityName = ""
+    },
+    circleEditing(circleEdit) {
+      this.circleEditCheck = circleEdit
     },
   },
 }
@@ -63,5 +84,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.circle-edit {
+  display: inline;
 }
 </style>

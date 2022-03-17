@@ -8,7 +8,7 @@
 <script>
 import CircleLogin from "@/components/CircleLogin.vue"
 export default {
-  name: "UserCircleRegisterView",
+  name: "CircleLoginView",
   components: {
     CircleLogin,
   },
@@ -817,8 +817,13 @@ export default {
     }
   },
   methods: {
-    circleLoginDataMove(circleLoginState, circleLoginName) {
-      this.$emit("circleLoginData", circleLoginState, circleLoginName)
+    circleLoginDataMove(circleLoginState, circleLoginName, selectUniversity) {
+      this.$emit(
+        "circleLoginData",
+        circleLoginState,
+        circleLoginName,
+        selectUniversity
+      )
     },
   },
 }

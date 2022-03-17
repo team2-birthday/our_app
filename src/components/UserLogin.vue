@@ -7,10 +7,10 @@
       {{ email }}
     </div>
   </div>
-  <div>
+  <div v-if="userLogin === false">
     <button v-on:click="logInGoogle">ログイン</button>
   </div>
-  <div>
+  <div v-else>
     <button v-on:click="logOutGoogle">ログアウト</button>
   </div>
 </template>
@@ -23,10 +23,17 @@ import {
   signOut,
 } from "firebase/auth"
 export default {
+  props: {
+    circleLogin: {
+      type: Boolean,
+      require: true,
+    },
+  },
   data() {
     return {
       userName: "",
       email: "",
+      userLogin: false,
     }
   },
   methods: {
@@ -40,6 +47,7 @@ export default {
           result.user
           this.userName = result.user.displayName
           this.email = result.user.email
+          this.userLogin = true
         })
         .catch((error) => {
           error.code
@@ -50,16 +58,21 @@ export default {
     },
     logOutGoogle() {
       const auth = getAuth()
-      signOut(auth)
-        .then(() => {
-          // Sign-out successful.
-          this.userName = ""
-          this.email = ""
-        })
-        .catch((error) => {
-          // An error happened.
-          console.error(error)
-        })
+      if (this.circleLogin) {
+        alert("まずサークルログアウトしてください")
+      } else {
+        signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            this.userName = ""
+            this.email = ""
+            this.userLogin = false
+          })
+          .catch((error) => {
+            // An error happened.
+            console.error(error)
+          })
+      }
     },
   },
 }
