@@ -1,5 +1,8 @@
 <template>
-  <CircleLogin v-bind:universityList="universityList"></CircleLogin>
+  <CircleLogin
+    v-bind:universityList="universityList"
+    v-on:circleLoginData="circleLoginDataMove"
+  ></CircleLogin>
 </template>
 
 <script>
@@ -8,11 +11,6 @@ export default {
   name: "UserCircleRegisterView",
   components: {
     CircleLogin,
-  },
-  props: {
-    login: {
-      type: Boolean,
-    },
   },
   data() {
     return {
@@ -817,6 +815,11 @@ export default {
         "和洋女子大学",
       ],
     }
+  },
+  methods: {
+    circleLoginDataMove(circleLoginState, circleLoginName) {
+      this.$emit("circleLoginData", circleLoginState, circleLoginName)
+    },
   },
 }
 </script>
