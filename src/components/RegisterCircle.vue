@@ -57,9 +57,11 @@
       <div>
         <input type="date" v-model="schedule" required />
         <input type="text" v-model="location" placeholder="活動場所" required />
-        <button v-on:click="activePush" v-bind:disabled="inputCheck">
-          日程と場所登録
-        </button>
+        <div>
+          <button v-on:click="activePush" v-bind:disabled="inputCheck">
+            日程と場所登録
+          </button>
+        </div>
         <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
           ※ 入力必須です
         </div>

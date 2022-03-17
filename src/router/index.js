@@ -33,6 +33,7 @@ const routes = [
     path: "/circleLogin",
     name: "circleLogin",
     component: CircleLoginView,
+    props: true,
   },
 ]
 

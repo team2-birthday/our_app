@@ -5,7 +5,7 @@
     <router-link to="/about">About</router-link> |
     <router-link to="/showcircle">show</router-link> |
     <router-link to="/registerCircle">サークル登録</router-link> |
-    <router-link to="/circleLogin"
+    <router-link to="/circleLogin" v-bind:login="login"
       >自分の所属しているサークルを登録</router-link
     >
   </nav>
@@ -18,6 +18,11 @@ export default {
   name: "UserLoginView",
   components: {
     UserLogin,
+  },
+  data() {
+    return {
+      login: false,
+    }
   },
 }
 </script>

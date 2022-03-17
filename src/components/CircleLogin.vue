@@ -38,6 +38,43 @@
       <button v-on:click="userRegister">ユーザー登録</button>
     </div>
   </div>
+  <div>
+    <div>サークルログイン</div>
+    <div>学校名</div>
+    <select
+      name="university"
+      id="university"
+      v-on:click="selectCircle"
+      v-model="universityKey"
+      required
+    >
+      <option value="">--学校名を選んでください--</option>
+      <option
+        v-for="(university, index) in universityList"
+        v-bind:key="index"
+        v-bind:value="university"
+      >
+        {{ university }}
+      </option>
+    </select>
+    <div class="error-message">※ 入力必須です</div>
+    <div>サークル名</div>
+    <select name="circle" id="circle" v-model="circleKey">
+      <option value="" selected>
+        --自分が登録するサークル名を選んでください--
+      </option>
+      <option
+        v-for="(registerCircle, index) in registerCircleList"
+        v-bind:key="index"
+        v-bind:value="registerCircle"
+      >
+        {{ registerCircle.name }}
+      </option>
+    </select>
+    <div>
+      <button v-on:click="userCircleLogin">サークルログイン</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -71,6 +108,18 @@ export default {
             ...doc.data(),
           })
         })
+      }
+    },
+    userCircleLogin() {
+      const auth = getAuth()
+      const user = auth.currentUser
+      for (let i = 0; i < this.circleKey.memberData.length; i++) {
+        if (
+          this.circleKey.memberData[i].userName === user.displayName &&
+          this.circleKey.memberData[i].useremail === user.email
+        ) {
+          console.log(i)
+        }
       }
     },
     userRegister() {

@@ -9,6 +9,11 @@ export default {
   components: {
     CircleLogin,
   },
+  props: {
+    login: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       universityList: [
