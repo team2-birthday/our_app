@@ -60,6 +60,9 @@
         <button v-on:click="activePush" v-bind:disabled="inputCheck">
           日程と場所登録
         </button>
+        <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
+          ※ 入力必須です
+        </div>
       </div>
       現在登録した日程とその日の活動場所（削除可能）
       <div v-for="(data, index) in activeData" v-bind:key="index">
@@ -166,6 +169,13 @@ export default {
         return false
       }
     },
+    lackCheck() {
+      if (this.activeData.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    },
   },
 }
 </script>
@@ -189,6 +199,15 @@ textarea:invalid + .error-message {
 /* :invalid時だけ隣の要素を表示 */
 select:invalid + .error-message {
   display: block;
+}
+
+.input-lack {
+  font-size: 12px;
+  color: #ff7676;
+}
+
+.lackcheck {
+  display: none;
 }
 
 .delete-btn {
