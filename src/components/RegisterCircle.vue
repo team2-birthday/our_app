@@ -53,27 +53,20 @@
       <div class="error-message">※ 入力必須です</div>
     </div>
     <div>
-      活動日程
+      活動日程と活動場所
       <div>
         <input type="date" v-model="schedule" required />
-        <button v-on:click="datesPush">日程登録</button>
-      </div>
-      現在登録した日程（削除可能）
-      <div v-for="(date, index) in dates" v-bind:key="index">
-        {{ date }}
-        <button v-on:click="dateDelete(index)" class="delete-btn">削除</button>
-      </div>
-    </div>
-    <div>
-      活動場所
-      <div>
         <input type="text" v-model="location" placeholder="活動場所" required />
-        <button v-on:click="placesPush">活動場所登録</button>
+        <button v-on:click="activePush" v-bind:disabled="inputCheck">
+          日程と場所登録
+        </button>
       </div>
-      現在登録した活動場所（削除可能）
-      <div v-for="(place, index) in places" v-bind:key="index">
-        {{ place }}
-        <button v-on:click="placeDelete(index)" class="delete-btn">削除</button>
+      現在登録した日程とその日の活動場所（削除可能）
+      <div v-for="(data, index) in activeData" v-bind:key="index">
+        {{ data.date }}:{{ data.place }}
+        <button v-on:click="datePlaceDelete(index)" class="delete-btn">
+          削除
+        </button>
       </div>
     </div>
     <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
@@ -95,9 +88,8 @@ export default {
   },
   data() {
     return {
-      dates: [],
+      activeData: [], //活動日程と活動場所を格納する配列
       number: "",
-      places: [],
       text: "",
       circleName: "",
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
@@ -108,25 +100,19 @@ export default {
     }
   },
   methods: {
-    datesPush() {
-      if (this.schedule != "") {
-        this.dates.push(this.schedule)
+    activePush() {
+      if (this.schedule != "" && this.locaton != "") {
+        this.activeData.push({ date: this.schedule, place: this.location })
         //昇順に並べる
-        this.dates = [...this.dates].sort((a, b) => new Date(a) - new Date(b))
+        this.activeData = [...this.activeData].sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        )
       }
       this.schedule = ""
-    },
-    dateDelete(date) {
-      this.dates.splice(date, 1)
-    },
-    placesPush() {
-      if (this.location != "") {
-        this.places.push(this.location)
-      }
       this.location = ""
     },
-    placeDelete(place) {
-      this.places.splice(place, 1)
+    datePlaceDelete(data) {
+      this.activeData.splice(data, 1)
     },
     registerCircle() {
       const auth = getAuth()
@@ -146,16 +132,14 @@ export default {
           {
             number: this.number,
             name: this.circleName,
-            dates: this.dates,
-            places: this.places,
+            circleData: this.activeData,
             text: this.text,
             memberData: this.memberData,
           }
         )
         this.number = ""
         this.circleName = ""
-        this.dates.splice(0)
-        this.places.splice(0)
+        this.activeData.splice(0)
         this.text = ""
         this.registerComplete = true
       }
@@ -168,9 +152,15 @@ export default {
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
-        this.dates.length === 0 ||
-        this.places.length === 0
+        this.activeData.length === 0
       ) {
+        return true
+      } else {
+        return false
+      }
+    },
+    inputCheck() {
+      if (this.location === "" || this.schedule === "") {
         return true
       } else {
         return false
