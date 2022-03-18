@@ -137,7 +137,7 @@ export default {
           {
             number: this.number,
             name: this.circleName,
-            circleData: this.activeData,
+            schedule: this.activeData,
             text: this.text,
             memberData: this.memberData,
           }

@@ -124,7 +124,7 @@ export default {
       this.activeData.splice(data, 1)
     },
     memberDelete(member) {
-      this.memberDelete.splice(member, 1)
+      this.memberData.splice(member, 1)
     },
     registerCircle() {
       const auth = getAuth()
@@ -143,7 +143,7 @@ export default {
         {
           number: this.number,
           name: this.circleName,
-          circleData: this.activeData,
+          schedule: this.activeData,
           text: this.text,
           memberData: this.memberData,
         }
@@ -194,7 +194,7 @@ export default {
       )
     )
     this.circleData = circleEditData.data()
-    this.activeData = this.circleData.circleData
+    this.activeData = this.circleData.schedule
     this.circleName = this.circleData.name
     this.number = this.circleData.number
     this.text = this.circleData.text

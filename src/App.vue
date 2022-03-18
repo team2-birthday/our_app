@@ -24,6 +24,7 @@
     v-on:circleLoginData="circleLoginDataMove"
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
+    v-bind:circleLogin="circleLogin"
   />
 </template>
 

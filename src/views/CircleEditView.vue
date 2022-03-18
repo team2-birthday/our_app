@@ -2,6 +2,7 @@
   <CircleEdit
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
+    v-bind:circleLogin="circleLogin"
     v-on:circleEditing="circleEditing"
   ></CircleEdit>
 </template>
@@ -20,6 +21,10 @@ export default {
     },
     universityName: {
       type: String,
+      require: true,
+    },
+    circleLogin: {
+      type: Boolean,
       require: true,
     },
   },
