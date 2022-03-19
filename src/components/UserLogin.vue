@@ -1,17 +1,19 @@
 <template>
-  <div>
+  <div class="user-login">
     <div>
-      {{ userName }}
+      <div>
+        {{ userName }}
+      </div>
+      <div>
+        {{ email }}
+      </div>
     </div>
-    <div>
-      {{ email }}
+    <div v-if="userLogin === false">
+      <button v-on:click="logInGoogle">ログイン</button>
     </div>
-  </div>
-  <div v-if="userLogin === false">
-    <button v-on:click="logInGoogle">ログイン</button>
-  </div>
-  <div v-else>
-    <button v-on:click="logOutGoogle">ログアウト</button>
+    <div v-else>
+      <button v-on:click="logOutGoogle">ログアウト</button>
+    </div>
   </div>
 </template>
 
@@ -77,3 +79,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.user-login {
+  float: right;
+}
+</style>

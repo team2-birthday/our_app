@@ -1,10 +1,15 @@
 <template>
-  {{ circleLoginName }}
-  <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
-  <div v-if="circleLogin">
-    <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
-      サークルログアウト
-    </button>
+  <div class="header">
+    <div class="prodact-name">プロダクト名</div>
+    <div class="login">
+      <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
+      <div v-if="circleLogin">
+        <div>サークル:{{ circleLoginName }}</div>
+        <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
+          サークルログアウト
+        </button>
+      </div>
+    </div>
   </div>
   <nav>
     <router-link to="/">Home</router-link> |
@@ -25,6 +30,7 @@
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
     v-bind:circleLogin="circleLogin"
+    class="router-view"
   />
 </template>
 
@@ -66,6 +72,10 @@ export default {
 </script>
 
 <style>
+body {
+  margin: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -74,8 +84,32 @@ export default {
   color: #2c3e50;
 }
 
+.header {
+  background-color: rgb(0, 174, 255);
+  position: fixed; /* ウィンドウを基準に画面に固定 */
+  width: 100%;
+  height: auto;
+  z-index: 100;
+  display: flex;
+  align-items: center; /*上下中央揃え*/
+}
+
 nav {
-  padding: 30px;
+  position: fixed; /* ウィンドウを基準に画面に固定 */
+  display: inline;
+  float: right;
+  margin-top: 9%;
+  margin-bottom: 3%;
+  z-index: 50;
+}
+
+.prodact-name {
+  padding-left: 1%;
+}
+
+.login {
+  padding: 1%;
+  margin-left: auto;
 }
 
 nav a {
@@ -89,5 +123,10 @@ nav a.router-link-exact-active {
 
 .circle-edit {
   display: inline;
+}
+
+.router-view {
+  padding: 200px;
+  z-index: 0;
 }
 </style>
