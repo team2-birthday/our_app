@@ -2,7 +2,9 @@
   <div class="header">
     <div class="prodact-name">プロダクト名</div>
     <div class="login">
-      <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
+      <div>
+        <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
+      </div>
       <div v-if="circleLogin">
         <div>サークル:{{ circleLoginName }}</div>
         <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
@@ -11,19 +13,21 @@
       </div>
     </div>
   </div>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/showcircle">show</router-link> |
-    <router-link to="/registerCircle">サークル登録</router-link> |
-    <router-link to="/circleLogin"
-      >自分の所属しているサークルにログイン</router-link
-    >
-    <div class="circle-edit" v-if="circleLogin">
-      |
-      <router-link to="/circleEdit">サークル内容の編集</router-link>
-    </div>
-  </nav>
+  <div class="router-link">
+    <nav>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link> |
+      <router-link to="/showcircle">show</router-link> |
+      <router-link to="/registerCircle">サークル登録</router-link> |
+      <router-link to="/circleLogin"
+        >自分の所属しているサークルにログイン</router-link
+      >
+      <div class="circle-edit" v-if="circleLogin">
+        |
+        <router-link to="/circleEdit">サークル内容の編集</router-link>
+      </div>
+    </nav>
+  </div>
   <router-view
     v-on:circleEditing="circleEditing"
     v-on:circleLoginData="circleLoginDataMove"
@@ -94,13 +98,16 @@ body {
   align-items: center; /*上下中央揃え*/
 }
 
+.router-link {
+  width: 100%;
+  display: flex;
+  position: fixed;
+  margin-top: 100px;
+}
+
 nav {
-  position: fixed; /* ウィンドウを基準に画面に固定 */
-  display: inline;
-  float: right;
-  margin-top: 9%;
-  margin-bottom: 3%;
-  z-index: 50;
+  margin-left: auto;
+  z-index: 100;
 }
 
 .prodact-name {

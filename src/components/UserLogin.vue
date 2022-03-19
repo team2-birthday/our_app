@@ -79,9 +79,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.user-login {
-  float: right;
-}
-</style>
