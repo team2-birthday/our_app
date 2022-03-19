@@ -1,10 +1,10 @@
 <template>
-  <div class="user-login">
+  <div>
     <div>
-      <div>
+      <div class="user-login">
         {{ userName }}
       </div>
-      <div>
+      <div class="user-login">
         {{ email }}
       </div>
     </div>
@@ -79,3 +79,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.user-login {
+  margin: 2%;
+}
+</style>

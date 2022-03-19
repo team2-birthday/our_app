@@ -1,32 +1,33 @@
 <template>
   <div class="header">
-    <div class="prodact-name">プロダクト名</div>
-    <div class="login">
-      <div>
-        <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
-      </div>
-      <div v-if="circleLogin">
-        <div>サークル:{{ circleLoginName }}</div>
-        <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
-          サークルログアウト
-        </button>
+    <div class="login-prodact-name">
+      <div class="prodact-name">プロダクト名</div>
+      <div class="login">
+        <div>
+          <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
+        </div>
+        <div v-if="circleLogin">
+          <div class="circle-login">サークル:{{ circleLoginName }}</div>
+          <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
+            サークルログアウト
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="router-link">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/showcircle">show</router-link> |
-      <router-link to="/registerCircle">サークル登録</router-link> |
-      <router-link to="/circleLogin"
-        >自分の所属しているサークルにログイン</router-link
-      >
-      <div class="circle-edit" v-if="circleLogin">
-        |
-        <router-link to="/circleEdit">サークル内容の編集</router-link>
-      </div>
-    </nav>
+    <div class="router-link">
+      <nav>
+        <router-link to="/">Home</router-link>
+        <router-link to="/about">About</router-link>
+        <router-link to="/showcircle">show</router-link>
+        <router-link to="/registerCircle">サークル登録</router-link>
+        <router-link to="/circleLogin"
+          >自分の所属しているサークルにログイン</router-link
+        >
+        <div class="circle-edit" v-if="circleLogin">
+          <router-link to="/circleEdit">サークル内容の編集</router-link>
+        </div>
+      </nav>
+    </div>
   </div>
   <router-view
     v-on:circleEditing="circleEditing"
@@ -89,34 +90,56 @@ body {
 }
 
 .header {
-  background-color: rgb(0, 174, 255);
+  height: auto;
+  width: 100%;
+  z-index: 100;
   position: fixed; /* ウィンドウを基準に画面に固定 */
+}
+
+.login-prodact-name {
+  background: linear-gradient(#05fbff, #1e00ff);
   width: 100%;
   height: auto;
-  z-index: 100;
   display: flex;
   align-items: center; /*上下中央揃え*/
 }
 
 .router-link {
-  width: 100%;
   display: flex;
-  position: fixed;
-  margin-top: 100px;
 }
 
 nav {
+  display: flex;
+  align-items: center; /*上下中央揃え*/
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
   margin-left: auto;
-  z-index: 100;
+}
+
+a {
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 .prodact-name {
+  color: white;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  font-size: 37px;
   padding-left: 1%;
+  margin: 1%;
 }
 
 .login {
-  padding: 1%;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  color: white;
+  margin: 1%;
   margin-left: auto;
+}
+
+.circle-login {
+  margin: 1%;
 }
 
 nav a {
@@ -125,7 +148,7 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #42b983;
+  color: #0039f3;
 }
 
 .circle-edit {
@@ -133,7 +156,7 @@ nav a.router-link-exact-active {
 }
 
 .router-view {
-  padding: 200px;
+  padding: 250px;
   z-index: 0;
 }
 </style>
