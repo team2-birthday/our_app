@@ -233,7 +233,7 @@ export default {
 
 <style>
 .register-circle {
-  padding: 250px;
+  padding-top: 250px;
 }
 
 .error-message {
@@ -271,22 +271,6 @@ select:invalid + .error-message {
 }
 .delete-btn:hover {
   background-color: red;
-}
-
-.eye:after {
-  font-family: "FontAwesome";
-  content: "\f06e";
-}
-
-.eye-slash:after {
-  font-family: "FontAwesome";
-  content: "\f070";
-}
-
-.input-icon {
-  position: relative;
-  float: right;
-  margin-top: -25px;
 }
 
 .explanation {

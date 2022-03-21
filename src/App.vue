@@ -155,7 +155,7 @@ nav a.router-link-exact-active {
 }
 
 .router-view {
-  padding: 250px;
+  padding-top: 250px;
   z-index: 0;
 }
 </style>

@@ -1,5 +1,12 @@
 <template>
-  <div>
+  <head>
+    <link
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      rel="stylesheet"
+    />
+    <!--アイコン画像にリンク-->
+  </head>
+  <div class="circle-edit-page">
     <div v-if="registerComplete">
       <div>編集が完了しました</div>
       <div>下のリンクから戻って下さい</div>
@@ -73,6 +80,23 @@
           </button>
         </div>
       </div>
+      <div>
+        <div>パスワード</div>
+        <div>※ 編集時に使います</div>
+        <input
+          v-bind:type="typeChange"
+          v-model="password"
+          minlength="8"
+          maxlength="15"
+          size="15"
+          pattern="[a-zA-Z0-9]+"
+          title="パスワードは(8~15文字)半角英数字で入力してください。"
+          required
+        />
+        <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
+        ><!--アイコン表示場所-->
+        <div class="error-message">※ 入力必須です</div>
+      </div>
       <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
         編集完了
       </button>
@@ -106,6 +130,11 @@ export default {
       registerComplete: false, //サークルの登録したかどうかを確かめる変数
       memberData: [], //会員のデータを格納する変数
       circleData: null, //編集するサークルのデータを格納する編集
+      registerPassword: "", //サークル登録時のパスワードの格納
+      password: "", //編集時に入力するパスワードの設定に使う変数
+      typeChange: "password", //inputの属性を管理する変数
+      typeChangeCheck: true, //input属性を切り替える変数
+      iconType: "fas fa-eye",
     }
   },
   methods: {
@@ -126,34 +155,50 @@ export default {
     memberDelete(member) {
       this.memberData.splice(member, 1)
     },
-    registerCircle() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (this.memberData.length <= 0) {
-        this.memberData.push({
-          userName: user.displayName,
-          usermail: user.email,
-        })
+    //パスワードの確認を行えるようにする関数
+    passwordCheck() {
+      this.typeChangeCheck = !this.typeChangeCheck
+      if (this.typeChangeCheck) {
+        this.typeChange = "password"
+        this.iconType = "fas fa-eye"
+      } else {
+        this.typeChange = "text"
+        this.iconType = "fas fa-eye-slash"
       }
-      setDoc(
-        doc(
-          collection(db, "univ", this.universityName, "circle"),
-          this.circleName
-        ),
-        {
-          number: this.number,
-          name: this.circleName,
-          schedule: this.activeData,
-          text: this.text,
-          memberData: this.memberData,
+    },
+    registerCircle() {
+      if (this.registerPassword === this.password) {
+        const auth = getAuth()
+        const user = auth.currentUser
+        if (this.memberData.length <= 0) {
+          this.memberData.push({
+            userName: user.displayName,
+            usermail: user.email,
+          })
         }
-      )
-      this.number = ""
-      this.circleName = ""
-      this.activeData.splice(0)
-      this.memberData.splice(0)
-      this.text = ""
-      this.registerComplete = true
+        setDoc(
+          doc(
+            collection(db, "univ", this.universityName, "circle"),
+            this.circleName
+          ),
+          {
+            number: this.number,
+            name: this.circleName,
+            schedule: this.activeData,
+            text: this.text,
+            memberData: this.memberData,
+            password: this.registerPassword,
+          }
+        )
+        this.number = ""
+        this.circleName = ""
+        this.activeData.splice(0)
+        this.memberData.splice(0)
+        this.text = ""
+        this.registerComplete = true
+      } else {
+        alert("パスワードが違います。")
+      }
     },
   },
   computed: {
@@ -163,7 +208,8 @@ export default {
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
-        this.activeData.length === 0
+        this.activeData.length === 0 ||
+        (this.password.length >= 8 && this.password.length <= 15)
       ) {
         return true
       } else {
@@ -199,9 +245,16 @@ export default {
     this.number = this.circleData.number
     this.text = this.circleData.text
     this.memberData = this.circleData.memberData
+    this.registerPassword = this.circleData.password
   },
   unmounted() {
     this.$emit("circleEditing", false)
   },
 }
 </script>
+
+<style>
+.circle-edit-page {
+  padding-top: 250px;
+}
+</style>
