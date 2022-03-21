@@ -1,82 +1,113 @@
 <template>
-  <div v-if="registerComplete">
-    <div>登録が完了しました</div>
-    <div>下のリンクから戻って下さい</div>
-    <router-link to="/">home</router-link>
-  </div>
-  <div v-else>
-    <div>
-      <div>登録前にログインしてください</div>
-      <div>学校名</div>
-      <select
-        name="university"
-        id="university"
-        v-model="universityKey"
-        required
-      >
-        <option value="">--学校名を選んでください--</option>
-        <option
-          v-for="(university, index) in universityList"
-          v-bind:key="index"
-          v-bind:value="university"
-        >
-          {{ university }}
-        </option>
-      </select>
-      <div class="error-message">※ 入力必須です</div>
+  <head>
+    <link
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      rel="stylesheet"
+    />
+    <!--アイコン画像にリンク-->
+  </head>
+  <div class="register-circle">
+    <div v-if="registerComplete">
+      <div>登録が完了しました</div>
+      <div>下のリンクから戻って下さい</div>
+      <router-link to="/">home</router-link>
     </div>
-    <div>
-      <div>サークル名</div>
-      <input
-        type="text"
-        v-model="circleName"
-        placeholder="サークル名"
-        required
-      />
-      <div class="error-message">※ 入力必須です</div>
-    </div>
-    <div>
-      サークルの所属している人数
-      <input type="number" v-model="number" placeholder="人数" required />
-      <div class="error-message">※ 入力必須です</div>
-    </div>
-    <div>
-      <div>説明文</div>
-      <textarea
-        type="text"
-        v-model="text"
-        rows="10"
-        class="explanation"
-        placeholder="ここにサークルの詳細を入力してください"
-        required
-      />
-      <div class="error-message">※ 入力必須です</div>
-    </div>
-    <div>
-      活動日程と活動場所
+    <div v-else>
       <div>
-        <input type="date" v-model="schedule" required />
-        <input type="text" v-model="location" placeholder="活動場所" required />
+        <div>登録前にログインしてください</div>
+        <div>学校名</div>
+        <select
+          name="university"
+          id="university"
+          v-model="universityKey"
+          required
+        >
+          <option value="">--学校名を選んでください--</option>
+          <option
+            v-for="(university, index) in universityList"
+            v-bind:key="index"
+            v-bind:value="university"
+          >
+            {{ university }}
+          </option>
+        </select>
+        <div class="error-message">※ 入力必須です</div>
+      </div>
+      <div>
+        <div>サークル名</div>
+        <input
+          type="text"
+          v-model="circleName"
+          placeholder="サークル名"
+          required
+        />
+        <div class="error-message">※ 入力必須です</div>
+      </div>
+      <div>
+        サークルの所属している人数
+        <input type="number" v-model="number" placeholder="人数" required />
+        <div class="error-message">※ 入力必須です</div>
+      </div>
+      <div>
+        <div>説明文</div>
+        <textarea
+          type="text"
+          v-model="text"
+          rows="10"
+          class="explanation"
+          placeholder="ここにサークルの詳細を入力してください"
+          required
+        />
+        <div class="error-message">※ 入力必須です</div>
+      </div>
+      <div>
+        活動日程と活動場所
         <div>
-          <button v-on:click="activePush" v-bind:disabled="inputCheck">
-            日程と場所登録
+          <input type="date" v-model="schedule" required />
+          <input
+            type="text"
+            v-model="location"
+            placeholder="活動場所"
+            required
+          />
+          <div>
+            <button v-on:click="activePush" v-bind:disabled="inputCheck">
+              日程と場所登録
+            </button>
+          </div>
+          <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
+            ※ 入力必須です
+          </div>
+        </div>
+        現在登録した日程とその日の活動場所（削除可能）
+        <div v-for="(data, index) in activeData" v-bind:key="index">
+          {{ data.date }}:{{ data.place }}
+          <button v-on:click="datePlaceDelete(index)" class="delete-btn">
+            削除
           </button>
         </div>
-        <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
-          ※ 入力必須です
-        </div>
       </div>
-      現在登録した日程とその日の活動場所（削除可能）
-      <div v-for="(data, index) in activeData" v-bind:key="index">
-        {{ data.date }}:{{ data.place }}
-        <button v-on:click="datePlaceDelete(index)" class="delete-btn">
-          削除
-        </button>
+      <div>
+        <div>パスワード</div>
+        <div>※ 編集時に使います</div>
+        <input
+          v-bind:type="typeChange"
+          v-model="password"
+          minlength="8"
+          maxlength="15"
+          size="15"
+          pattern="[a-zA-Z0-9]+"
+          title="パスワードは(8~15文字)半角英数字で入力してください。"
+          required
+        />
+        <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
+        ><!--アイコン表示場所-->
+        <div class="error-message">※ 入力必須です</div>
       </div>
+      <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
+        登録
+      </button>
     </div>
-    <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
-      登録
-    </button>
   </div>
 </template>
 
@@ -102,6 +133,10 @@ export default {
       schedule: "", //活動日程をpushする変数
       registerComplete: false, //サークルの登録したかどうかを確かめる変数
       memberData: [], //会員のデータを格納する変数
+      password: "", //編集時に入力するパスワードの設定に使う変数
+      typeChange: "password", //inputの属性を管理する変数
+      typeChangeCheck: true, //input属性を切り替える変数
+      iconType: "fas fa-eye",
     }
   },
   methods: {
@@ -118,6 +153,17 @@ export default {
     },
     datePlaceDelete(data) {
       this.activeData.splice(data, 1)
+    },
+    //パスワードの確認を行えるようにする関数
+    passwordCheck() {
+      this.typeChangeCheck = !this.typeChangeCheck
+      if (this.typeChangeCheck) {
+        this.typeChange = "password"
+        this.iconType = "fas fa-eye"
+      } else {
+        this.typeChange = "text"
+        this.iconType = "fas fa-eye-slash"
+      }
     },
     registerCircle() {
       const auth = getAuth()
@@ -140,12 +186,14 @@ export default {
             schedule: this.activeData,
             text: this.text,
             memberData: this.memberData,
+            password: this.password,
           }
         )
         this.number = ""
         this.circleName = ""
         this.activeData.splice(0)
         this.text = ""
+        this.password = ""
         this.registerComplete = true
       }
     },
@@ -157,7 +205,8 @@ export default {
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
-        this.activeData.length === 0
+        this.activeData.length === 0 ||
+        (this.password >= 8 && this.password <= 15)
       ) {
         return true
       } else {
@@ -183,6 +232,10 @@ export default {
 </script>
 
 <style>
+.register-circle {
+  padding: 250px;
+}
+
 .error-message {
   font-size: 12px;
   color: #ff7676;
@@ -218,6 +271,22 @@ select:invalid + .error-message {
 }
 .delete-btn:hover {
   background-color: red;
+}
+
+.eye:after {
+  font-family: "FontAwesome";
+  content: "\f06e";
+}
+
+.eye-slash:after {
+  font-family: "FontAwesome";
+  content: "\f070";
+}
+
+.input-icon {
+  position: relative;
+  float: right;
+  margin-top: -25px;
 }
 
 .explanation {
