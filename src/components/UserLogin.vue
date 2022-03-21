@@ -9,10 +9,14 @@
       </div>
     </div>
     <div v-if="userLogin === false">
-      <button v-on:click="logInGoogle">ログイン</button>
+      <button v-on:click="logInGoogle" class="login-logout-btn">
+        ログイン
+      </button>
     </div>
     <div v-else>
-      <button v-on:click="logOutGoogle">ログアウト</button>
+      <button v-on:click="logOutGoogle" class="login-logout-btn">
+        ログアウト
+      </button>
     </div>
   </div>
 </template>
@@ -83,5 +87,17 @@ export default {
 <style>
 .user-login {
   margin: 2%;
+}
+
+.login-logout-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+}
+
+.login-logout-btn:hover {
+  font-size: 20px;
 }
 </style>

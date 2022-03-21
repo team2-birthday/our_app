@@ -8,7 +8,11 @@
         </div>
         <div v-if="circleLogin">
           <div class="circle-login">サークル:{{ circleLoginName }}</div>
-          <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
+          <button
+            v-on:click="circleLogout"
+            v-bind:disabled="circleEditCheck"
+            class="circle-logout-btn"
+          >
             サークルログアウト
           </button>
         </div>
@@ -118,6 +122,7 @@ nav {
 a {
   padding-left: 2%;
   padding-right: 2%;
+  text-decoration: none; /* リンクの下線を消す */
 }
 
 .prodact-name {
@@ -133,12 +138,25 @@ a {
   font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
     "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
   color: white;
+  font-size: 13px;
   margin: 1%;
   margin-left: auto;
 }
 
 .circle-login {
   margin: 1%;
+}
+
+.circle-logout-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+}
+
+.circle-logout-btn:hover {
+  font-size: 20px;
 }
 
 nav a {
