@@ -4,6 +4,7 @@
       <div class="prodact-name">プロダクト名</div>
       <div class="login">
         <div>
+          <router-link to="/registerUser">ユーザー登録</router-link>
           <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
         </div>
         <div v-if="circleLogin">

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import ShowCircle from "../views/ShowCircle.vue"
+import RegisterUser from "@/views/RegisterUserView.vue"
 import RegisterCircleView from "@/views/RegisterCircleView.vue"
 import CircleLoginView from "@/views/CircleLoginView.vue"
 import CircleEditView from "@/views/CircleEditView.vue"
@@ -19,6 +20,12 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+  },
+  {
+    path: "/registerUser",
+    name: "registerUser",
+    component: RegisterUser,
+    props: true,
   },
   {
     path: "/registerCircle",
