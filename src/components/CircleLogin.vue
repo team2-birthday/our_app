@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore"
+import { collection, getDocs, updateDoc, doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase.js"
 export default {
   props: {
@@ -132,6 +132,7 @@ export default {
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       circleKey: "", //現在どこのサークルがselectされているのかを示す変数
       registerCircleList: [],
+      users: [], //登録したユーザー情報を格納する配列
     }
   },
   methods: {
@@ -183,7 +184,7 @@ export default {
       }
     },
     //ユーザーの情報をサークルに保存しておく関数
-    userRegister() {
+    async userRegister() {
       if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
@@ -197,7 +198,14 @@ export default {
               userName: this.userName,
               usermail: this.email,
             })
-            updateDoc(
+            await getDoc(doc(db, "userData", "users")).then((user) => {
+              this.users = user.data().userData
+            })
+            this.users.registerCircle.push({
+              universityName: this.universityKey,
+              circleName: this.circleKey.name,
+            })
+            await updateDoc(
               doc(
                 collection(db, "univ", this.universityKey, "circle"),
                 this.circleKey.name
@@ -206,6 +214,9 @@ export default {
                 memberData: this.circleKey.memberData,
               }
             )
+            await updateDoc(doc(db, "userData", "users"), {
+              userData: this.users,
+            })
             this.registerComplete = true
           }
         }

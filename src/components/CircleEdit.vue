@@ -161,11 +161,16 @@ export default {
     memberDelete(member) {
       if (this.memberData.length > 1) {
         for (let i = 0; i < this.users.length; i++) {
-          if (this.memberData[member].userName === this.users[i].userName) {
-            this.users[i].registerCircle.splice(i, 1)
+          if (
+            this.users[i].userName !== this.userName &&
+            this.users[i].userMail !== this.email
+          ) {
+            if (this.memberData[member].userName === this.users[i].userName) {
+              this.users[i].registerCircle.splice(i, 1)
+              this.memberData.splice(member, 1)
+            }
           }
         }
-        this.memberData.splice(member, 1)
       }
     },
     //パスワードの確認を行えるようにする関数
