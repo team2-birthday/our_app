@@ -90,7 +90,7 @@ export default {
             userName: this.userNameNow,
             userMail: this.emailNow,
             password: this.password,
-            registerCiercle: this.userCircleRegister,
+            registerCircle: this.userCircleRegister,
           })
           setDoc(doc(db, "userData", "users"), {
             userData: this.users,

@@ -140,6 +140,7 @@ export default {
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
+      users: [], //登録したユーザー情報を格納する配列
     }
   },
   methods: {
@@ -158,7 +159,14 @@ export default {
       this.activeData.splice(data, 1)
     },
     memberDelete(member) {
-      this.memberData.splice(member, 1)
+      if (this.memberData.length > 1) {
+        for (let i = 0; i < this.users.length; i++) {
+          if (this.memberData[member].userName === this.users[i].userName) {
+            this.users[i].registerCircle.splice(i, 1)
+          }
+        }
+        this.memberData.splice(member, 1)
+      }
     },
     //パスワードの確認を行えるようにする関数
     passwordCheck() {
@@ -243,6 +251,8 @@ export default {
         this.circleLoginName
       )
     )
+    const userData = await getDoc(doc(db, "userData", "users"))
+    this.users = userData.data().userData
     this.circleData = circleEditData.data()
     this.activeData = this.circleData.schedule
     this.circleName = this.circleData.name
@@ -253,6 +263,7 @@ export default {
   },
   unmounted() {
     this.$emit("circleEditing", false)
+    this.users.splice(0)
   },
 }
 </script>

@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { collection, setDoc, doc } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
   props: {
@@ -142,6 +142,7 @@ export default {
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
+      users: [], //登録したユーザー情報を格納する配列
     }
   },
   methods: {
@@ -178,6 +179,20 @@ export default {
           userName: this.userName,
           usermail: this.email,
         })
+        for (let i = 0; i < this.users.length; i++) {
+          if (
+            this.users[i].userName === this.userName &&
+            this.users[i].userMail === this.email
+          ) {
+            this.users[i].registerCircle.push({
+              universityName: this.universityKey,
+              circleName: this.circleName,
+            })
+            updateDoc(doc(db, "userData", "users"), {
+              userData: this.users,
+            })
+          }
+        }
         setDoc(
           doc(
             collection(db, "univ", this.universityKey, "circle"),
@@ -231,6 +246,13 @@ export default {
         return false
       }
     },
+  },
+  async mounted() {
+    const userData = await getDoc(doc(db, "userData", "users"))
+    this.users = userData.data().userData
+  },
+  unmounted() {
+    this.users.splice(0)
   },
 }
 </script>
