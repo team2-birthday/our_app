@@ -26,6 +26,7 @@ const routes = [
     path: "/MyPage",
     name: "MyPage",
     component: MyPageView,
+    props: true,
   },
   {
     path: "/registerUser",

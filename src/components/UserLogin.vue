@@ -36,7 +36,11 @@
       </div>
     </div>
     <div v-else>
-      <button v-on:click="logOutGoogle" class="login-logout-btn">
+      <button
+        v-on:click="logOutGoogle"
+        v-bind:disabled="myPageOpen"
+        class="login-logout-btn"
+      >
         ログアウト
       </button>
     </div>
@@ -54,6 +58,10 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
   props: {
+    myPageOpen: {
+      type: Boolean,
+      require: true,
+    },
     circleLogin: {
       type: Boolean,
       require: true,

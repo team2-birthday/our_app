@@ -11,6 +11,7 @@
             v-bind:circleLogin="circleLogin"
             v-bind:userName="userName"
             v-bind:email="email"
+            v-bind:myPageOpen="myPageOpen"
             v-on:userDataUpgrade="userDataUpgrade"
           ></UserLogin>
         </div>
@@ -45,6 +46,7 @@
     </div>
   </div>
   <router-view
+    v-on:myPageStates="myPageStates"
     v-on:circleEditing="circleEditing"
     v-on:circleLoginData="circleLoginDataMove"
     v-bind:circleLoginName="circleLoginName"
@@ -70,6 +72,7 @@ export default {
       circleLogin: false,
       circleLoginName: "", //どこのサークルにログインしたかを表示する変数
       universityName: "", //どこの大学なのかを示す変数
+      myPageOpen: false, //myPage開いている間はユーザーログアウトさせないようにするための変数
     }
   },
   methods: {
@@ -93,6 +96,10 @@ export default {
     },
     circleEditing(circleEdit) {
       this.circleEditCheck = circleEdit
+    },
+    //マイページを開いてる間はユーザーログアウトできないようにするための関数
+    myPageStates(open) {
+      this.myPageOpen = open
     },
   },
 }
