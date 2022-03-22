@@ -35,6 +35,9 @@
         <router-link to="/circleLogin"
           >自分の所属しているサークルにログイン</router-link
         >
+        <div class="circle-edit" v-if="userName.length > 0 && email.length > 0">
+          <router-link to="/MyPage">マイページ</router-link>
+        </div>
         <div class="circle-edit" v-if="circleLogin">
           <router-link to="/circleEdit">サークル内容の編集</router-link>
         </div>
