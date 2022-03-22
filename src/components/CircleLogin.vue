@@ -184,7 +184,7 @@ export default {
       }
     },
     //ユーザーの情報をサークルに保存しておく関数
-    async userRegister() {
+    userRegister() {
       if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
@@ -194,18 +194,24 @@ export default {
             this.memberDataPushed = true
             break
           } else if (i === this.circleKey.memberData.length - 1) {
+            for (let j = 0; j < this.users.length; j++) {
+              if (
+                this.users[j].userName === this.userName &&
+                this.users[j].userMail === this.email
+              ) {
+                console.log(this.users[j])
+                this.users[j].registerCircle.push({
+                  universityName: this.universityKey,
+                  circleName: this.circleKey.name,
+                })
+                break
+              }
+            }
             this.circleKey.memberData.push({
               userName: this.userName,
               usermail: this.email,
             })
-            await getDoc(doc(db, "userData", "users")).then((user) => {
-              this.users = user.data().userData
-            })
-            this.users.registerCircle.push({
-              universityName: this.universityKey,
-              circleName: this.circleKey.name,
-            })
-            await updateDoc(
+            updateDoc(
               doc(
                 collection(db, "univ", this.universityKey, "circle"),
                 this.circleKey.name
@@ -214,7 +220,7 @@ export default {
                 memberData: this.circleKey.memberData,
               }
             )
-            await updateDoc(doc(db, "userData", "users"), {
+            updateDoc(doc(db, "userData", "users"), {
               userData: this.users,
             })
             this.registerComplete = true
@@ -224,6 +230,10 @@ export default {
         alert("ログインしてください")
       }
     },
+  },
+  async mounted() {
+    const userData = await getDoc(doc(db, "userData", "users"))
+    this.users = userData.data().userData
   },
 }
 </script>
