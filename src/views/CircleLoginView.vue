@@ -1,6 +1,8 @@
 <template>
   <CircleLogin
     v-bind:universityList="universityList"
+    v-bind:userName="userName"
+    v-bind:email="email"
     v-on:circleLoginData="circleLoginDataMove"
   ></CircleLogin>
 </template>
@@ -11,6 +13,14 @@ export default {
   name: "CircleLoginView",
   components: {
     CircleLogin,
+  },
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -228,7 +238,7 @@ export default {
         "金城学院大学",
         "釧路公立大学",
         "国立音楽大学",
-        "熊本大学　国",
+        "熊本大学",
         "熊本学園大学",
         "熊本県立大学",
         "熊本保健科学大学",

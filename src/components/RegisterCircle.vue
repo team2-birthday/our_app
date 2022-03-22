@@ -112,7 +112,6 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth"
 import { collection, setDoc, doc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
@@ -120,6 +119,12 @@ export default {
     universityList: {
       type: Array,
       required: true,
+    },
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
     },
   },
   data() {
@@ -166,14 +171,12 @@ export default {
       }
     },
     registerCircle() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (user === null) {
+      if (this.userName === "" && this.email === "") {
         alert("ログインしてから登録して下さい。")
       } else {
         this.memberData.push({
-          userName: user.displayName,
-          usermail: user.email,
+          userName: this.userName,
+          usermail: this.email,
         })
         setDoc(
           doc(
@@ -206,7 +209,8 @@ export default {
         this.circleName === "" ||
         this.text === "" ||
         this.activeData.length === 0 ||
-        (this.password >= 8 && this.password <= 15)
+        this.password.length < 8 ||
+        this.password.length > 15
       ) {
         return true
       } else {

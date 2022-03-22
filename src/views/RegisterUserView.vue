@@ -6,7 +6,7 @@
     />
     <!--アイコン画像にリンク-->
   </head>
-  <div class="register-user">
+  <div class="register-user" v-if="userName.length === 0 && email.length === 0">
     <div>ログインしていないユーザーはまず登録お願いします</div>
     <div>パスワードを決めて下さい</div>
     <input
@@ -26,6 +26,10 @@
       <button v-on:click="registerUser">登録</button>
     </div>
   </div>
+  <div v-else class="register-user">
+    <div>現在ログイン中です</div>
+    <router-link to="/">Home</router-link>
+  </div>
 </template>
 
 <script>
@@ -38,6 +42,14 @@ import {
 import { setDoc, doc, getDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+  },
   data() {
     return {
       password: "", //編集時に入力するパスワードの設定に使う変数

@@ -104,7 +104,6 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth"
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore"
 import { db } from "../firebase.js"
 export default {
@@ -113,9 +112,11 @@ export default {
       type: Array,
       required: true,
     },
-    circleLogin: {
-      type: Boolean,
-      require: true,
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
     },
   },
   data() {
@@ -158,13 +159,11 @@ export default {
     },
     //サークルログインする関数
     userCircleLogin() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (user !== null) {
+      if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
-            this.circleKey.memberData[i].userName === user.displayName &&
-            this.circleKey.memberData[i].usermail === user.email
+            this.circleKey.memberData[i].userName === this.userName &&
+            this.circleKey.memberData[i].usermail === this.email
           ) {
             this.circleLoginState = true
             this.circleLoginName = this.circleKey.name
@@ -185,20 +184,18 @@ export default {
     },
     //ユーザーの情報をサークルに保存しておく関数
     userRegister() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (user !== null) {
+      if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
-            this.circleKey.memberData[i].userName === user.displayName &&
-            this.circleKey.memberData[i].usermail === user.email
+            this.circleKey.memberData[i].userName === this.userName &&
+            this.circleKey.memberData[i].usermail === this.email
           ) {
             this.memberDataPushed = true
             break
           } else if (i === this.circleKey.memberData.length - 1) {
             this.circleKey.memberData.push({
-              userName: user.displayName,
-              usermail: user.email,
+              userName: this.userName,
+              usermail: this.email,
             })
             updateDoc(
               doc(

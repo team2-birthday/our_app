@@ -4,7 +4,9 @@
       <div class="prodact-name">プロダクト名</div>
       <div class="login">
         <div>
-          <router-link to="/registerUser">ユーザー登録</router-link>
+          <router-link to="/registerUser" class="user-register"
+            >ユーザー登録</router-link
+          >
           <UserLogin
             v-bind:circleLogin="circleLogin"
             v-bind:userName="userName"
@@ -44,7 +46,8 @@
     v-on:circleLoginData="circleLoginDataMove"
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
-    v-bind:circleLogin="circleLogin"
+    v-bind:userName="userName"
+    v-bind:email="email"
     class="router-view"
   />
 </template>
@@ -155,6 +158,10 @@ a {
   margin-left: auto;
 }
 
+.user-register {
+  color: white;
+}
+
 .circle-login {
   margin: 1%;
 }
@@ -165,10 +172,6 @@ a {
   color: white;
   font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
     "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
-}
-
-.circle-logout-btn:hover {
-  font-size: 20px;
 }
 
 nav a {

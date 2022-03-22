@@ -2,7 +2,8 @@
   <CircleEdit
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
-    v-bind:circleLogin="circleLogin"
+    v-bind:userName="userName"
+    v-bind:email="email"
     v-on:circleEditing="circleEditing"
   ></CircleEdit>
 </template>
@@ -23,9 +24,11 @@ export default {
       type: String,
       require: true,
     },
-    circleLogin: {
-      type: Boolean,
-      require: true,
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
     },
   },
   methods: {

@@ -1,5 +1,9 @@
 <template>
-  <RegisterCircle v-bind:universityList="universityList"></RegisterCircle>
+  <RegisterCircle
+    v-bind:universityList="universityList"
+    v-bind:userName="userName"
+    v-bind:email="email"
+  ></RegisterCircle>
 </template>
 
 <script>
@@ -8,6 +12,14 @@ export default {
   name: "RegisterCircleView",
   components: {
     RegisterCircle,
+  },
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -225,7 +237,7 @@ export default {
         "金城学院大学",
         "釧路公立大学",
         "国立音楽大学",
-        "熊本大学　国",
+        "熊本大学",
         "熊本学園大学",
         "熊本県立大学",
         "熊本保健科学大学",

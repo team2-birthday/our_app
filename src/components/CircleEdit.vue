@@ -105,7 +105,6 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth"
 import { collection, setDoc, doc, getDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
@@ -117,6 +116,12 @@ export default {
     universityName: {
       type: String,
       require: true,
+    },
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
     },
   },
   data() {
@@ -168,12 +173,10 @@ export default {
     },
     registerCircle() {
       if (this.registerPassword === this.password) {
-        const auth = getAuth()
-        const user = auth.currentUser
         if (this.memberData.length <= 0) {
           this.memberData.push({
-            userName: user.displayName,
-            usermail: user.email,
+            userName: this.userName,
+            usermail: this.email,
           })
         }
         setDoc(
@@ -209,7 +212,8 @@ export default {
         this.circleName === "" ||
         this.text === "" ||
         this.activeData.length === 0 ||
-        (this.password.length >= 8 && this.password.length <= 15)
+        this.password.length < 8 ||
+        this.password.length > 15
       ) {
         return true
       } else {
