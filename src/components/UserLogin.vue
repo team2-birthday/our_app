@@ -58,11 +58,15 @@ export default {
       type: Boolean,
       require: true,
     },
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {
-      userName: "",
-      email: "",
       userLogin: false,
       password: "", //編集時に入力するパスワードの設定に使う変数
       typeChange: "password", //inputの属性を管理する変数
@@ -100,8 +104,11 @@ export default {
               this.users[i].userMail === result.user.email &&
               this.users[i].password === this.password
             ) {
-              this.userName = result.user.displayName
-              this.email = result.user.email
+              this.$emit(
+                "userDataUpgrade",
+                result.user.displayName,
+                result.user.email
+              )
               this.userLogin = true
               break
             } else if (i === this.users.length - 1) {
@@ -125,8 +132,8 @@ export default {
         signOut(auth)
           .then(() => {
             // Sign-out successful.
-            this.userName = ""
-            this.email = ""
+            const logoutString = ""
+            this.$emit("userDataUpgrade", logoutString, logoutString)
             this.userLogin = false
           })
           .catch((error) => {
