@@ -1,7 +1,7 @@
 const functions = require("firebase-functions")
 const nodemailer = require("nodemailer")
-const gmailEmail = functions.config().gmail.email
-const gmailPassword = functions.config().gmail.password
+const gmailEmail = "phasi.ok.phasi@gmail.com"
+const gmailPassword = "7aThUstOstE9o"
 const mailTransport = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -9,12 +9,18 @@ const mailTransport = nodemailer.createTransport({
     pass: gmailPassword,
   },
 })
-exports.sendMail = functions.https.onCall((data, context) => {
+const admin = require("firebase-admin")
+admin.initializeApp()
+
+const getData = async () => {
+  const data = await admin.firestore().collection("univ")
+}
+const f = (context) => {
   let email = {
     from: gmailEmail,
-    to: data.destination,
+    to: "komiyo.univ334@gmail.com",
     subject: "活動のお知らせ",
-    text: "活動日が近づいてきました。\n",
+    text: "活動日が近づいてきました。",
   }
   mailTransport.sendMail(email, (err, info) => {
     if (err) {
@@ -22,4 +28,7 @@ exports.sendMail = functions.https.onCall((data, context) => {
     }
     return console.log("success")
   })
-})
+}
+exports.sendMail = functions.https.onCall(f)
+
+exports.scheduledFunction = functions.pubsub.schedule("every 1 minutes").onRun()
