@@ -23,7 +23,7 @@
           <select
             name="university"
             id="university"
-            v-on:click="selectCircle"
+            v-on:change="selectCircle"
             v-model="universityKey"
             required
           >
