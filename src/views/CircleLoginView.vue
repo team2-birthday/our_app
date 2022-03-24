@@ -1,6 +1,8 @@
 <template>
   <CircleLogin
     v-bind:universityList="universityList"
+    v-bind:userName="userName"
+    v-bind:email="email"
     v-on:circleLoginData="circleLoginDataMove"
   ></CircleLogin>
 </template>
@@ -11,6 +13,14 @@ export default {
   name: "CircleLoginView",
   components: {
     CircleLogin,
+  },
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {

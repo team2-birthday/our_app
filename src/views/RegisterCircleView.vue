@@ -1,5 +1,9 @@
 <template>
-  <RegisterCircle v-bind:universityList="universityList"></RegisterCircle>
+  <RegisterCircle
+    v-bind:universityList="universityList"
+    v-bind:userName="userName"
+    v-bind:email="email"
+  ></RegisterCircle>
 </template>
 
 <script>
@@ -8,6 +12,14 @@ export default {
   name: "RegisterCircleView",
   components: {
     RegisterCircle,
+  },
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {

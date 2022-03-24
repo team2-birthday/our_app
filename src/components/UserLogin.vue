@@ -28,11 +28,15 @@ export default {
       type: Boolean,
       require: true,
     },
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {
-      userName: "",
-      email: "",
       userLogin: false,
     }
   },
@@ -45,8 +49,11 @@ export default {
           const credential = GoogleAuthProvider.credentialFromResult(result)
           credential.accessToken
           result.user
-          this.userName = result.user.displayName
-          this.email = result.user.email
+          this.$emit(
+            "userDataUpgrade",
+            result.user.displayName,
+            result.user.email
+          )
           this.userLogin = true
         })
         .catch((error) => {
@@ -64,8 +71,8 @@ export default {
         signOut(auth)
           .then(() => {
             // Sign-out successful.
-            this.userName = ""
-            this.email = ""
+            const logoutString = ""
+            this.$emit("userDataUpgrade", logoutString, logoutString)
             this.userLogin = false
           })
           .catch((error) => {

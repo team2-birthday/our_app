@@ -1,5 +1,5 @@
 <template>
-  <div v-if="circleLogin">現在ログイン中です</div>
+  <div v-if="circleLogin && loginComplete === false">現在ログイン中です</div>
   <div v-else>
     <div v-if="userCheck === false">
       <div>どのサークルに所属しているのかを登録しましたか？</div>
@@ -57,10 +57,13 @@
       </div>
     </div>
     <div v-else-if="userCheck === true && registerCircleCheck == true">
-      <div v-if="loginComplete">
-        <div>登録完了しました。</div>
+      <div v-if="loginComplete && circleLoginState">
+        <div>ログイン完了しました。</div>
         <div>下のリンクから戻って下さい</div>
         <router-link to="/">home</router-link>
+      </div>
+      <div v-else-if="loginComplete && circleLoginState === false">
+        <div>ログイン失敗です</div>
       </div>
       <div v-else>
         <div>サークルログイン</div>
@@ -104,7 +107,6 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth"
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore"
 import { db } from "../firebase.js"
 export default {
@@ -117,6 +119,12 @@ export default {
       type: Boolean,
       require: true,
     },
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -127,7 +135,7 @@ export default {
       userCheck: false, //ユーザーがどのサークルに所属しているのかを登録したか確認する変数
       registerCircleCheck: false, //どのサークルに所属しているのかを登録したか確認する変数
       registerComplete: false, //どのサークルに所属しているのかを登録が完了したのか判別する変数
-      loginComplete: false, //サークルログインが完了したかどうかを判別する変数
+      loginComplete: false, //サークルログインの動作が一通り完了したかどうかを判別する変数
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       circleKey: "", //現在どこのサークルがselectされているのかを示す変数
       registerCircleList: [],
@@ -158,13 +166,11 @@ export default {
     },
     //サークルログインする関数
     userCircleLogin() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (user !== null) {
+      if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
-            this.circleKey.memberData[i].userName === user.displayName &&
-            this.circleKey.memberData[i].usermail === user.email
+            this.circleKey.memberData[i].userName === this.userName &&
+            this.circleKey.memberData[i].usermail === this.email
           ) {
             this.circleLoginState = true
             this.circleLoginName = this.circleKey.name
@@ -185,20 +191,18 @@ export default {
     },
     //ユーザーの情報をサークルに保存しておく関数
     userRegister() {
-      const auth = getAuth()
-      const user = auth.currentUser
-      if (user !== null) {
+      if (this.userName !== "" && this.email !== "") {
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
-            this.circleKey.memberData[i].userName === user.displayName &&
-            this.circleKey.memberData[i].usermail === user.email
+            this.circleKey.memberData[i].userName === this.userName &&
+            this.circleKey.memberData[i].usermail === this.email
           ) {
             this.memberDataPushed = true
             break
           } else if (i === this.circleKey.memberData.length - 1) {
             this.circleKey.memberData.push({
-              userName: user.displayName,
-              usermail: user.email,
+              userName: this.userName,
+              usermail: this.email,
             })
             updateDoc(
               doc(

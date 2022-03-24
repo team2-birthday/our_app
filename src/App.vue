@@ -1,6 +1,11 @@
 <template>
   {{ circleLoginName }}
-  <UserLogin v-bind:circleLogin="circleLogin"></UserLogin>
+  <UserLogin
+    v-bind:circleLogin="circleLogin"
+    v-bind:userName="userName"
+    v-bind:email="email"
+    v-on:userDataUpgrade="userDataUpgrade"
+  ></UserLogin>
   <div v-if="circleLogin">
     <button v-on:click="circleLogout" v-bind:disabled="circleEditCheck">
       サークルログアウト
@@ -25,6 +30,8 @@
     v-bind:circleLoginName="circleLoginName"
     v-bind:universityName="universityName"
     v-bind:circleLogin="circleLogin"
+    v-bind:userName="userName"
+    v-bind:email="email"
   />
 </template>
 
@@ -37,6 +44,8 @@ export default {
   },
   data() {
     return {
+      userName: "",
+      email: "",
       circleEditCheck: false, //サークル編集しているのかを確認する編集
       circleLogin: false,
       circleLoginName: "", //どこのサークルにログインしたかを表示する変数
@@ -44,6 +53,10 @@ export default {
     }
   },
   methods: {
+    userDataUpgrade(displayName, emailAddress) {
+      this.userName = displayName
+      this.email = emailAddress
+    },
     circleLoginDataMove(
       currentCircleLogin,
       currentCircleLoginName,
