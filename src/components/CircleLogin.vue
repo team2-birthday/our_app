@@ -1,5 +1,5 @@
 <template>
-  <div v-if="circleLogin">現在ログイン中です</div>
+  <div v-if="circleLogin && loginComplete === false">現在ログイン中です</div>
   <div v-else>
     <div v-if="userCheck === false">
       <div>どのサークルに所属しているのかを登録しましたか？</div>
@@ -58,7 +58,7 @@
     </div>
     <div v-else-if="userCheck === true && registerCircleCheck == true">
       <div v-if="loginComplete">
-        <div>登録完了しました。</div>
+        <div>ログイン成功です。</div>
         <div>下のリンクから戻って下さい</div>
         <router-link to="/">home</router-link>
       </div>
@@ -111,6 +111,10 @@ export default {
     universityList: {
       type: Array,
       required: true,
+    },
+    circleLogin: {
+      type: Boolean,
+      require: true,
     },
     userName: {
       type: String,

@@ -1,5 +1,6 @@
 <template>
   <RegisterCircle
+    v-bind:circleLogin="circleLogin"
     v-bind:universityList="universityList"
     v-bind:userName="userName"
     v-bind:email="email"
@@ -14,6 +15,10 @@ export default {
     RegisterCircle,
   },
   props: {
+    circleLogin: {
+      type: Boolean,
+      require: true,
+    },
     userName: {
       type: String,
     },

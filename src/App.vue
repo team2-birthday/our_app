@@ -50,6 +50,7 @@
     v-on:circleEditing="circleEditing"
     v-on:circleLoginData="circleLoginDataMove"
     v-bind:circleLoginName="circleLoginName"
+    v-bind:circleLogin="circleLogin"
     v-bind:universityName="universityName"
     v-bind:userName="userName"
     v-bind:email="email"
