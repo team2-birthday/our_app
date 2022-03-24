@@ -57,10 +57,14 @@
       </div>
     </div>
     <div v-else-if="userCheck === true && registerCircleCheck == true">
-      <div v-if="loginComplete">
+      <div v-if="circleLoginState">
         <div>ログイン成功です。</div>
         <div>下のリンクから戻って下さい</div>
         <router-link to="/">home</router-link>
+      </div>
+      <div v-else-if="loginComplete && circleLoginState === false">
+        <div>ログイン失敗です</div>
+        <div>再度登録してください。</div>
       </div>
       <div v-else>
         <div>サークルログイン</div>
