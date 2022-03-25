@@ -4,6 +4,7 @@
     v-bind:universityList="universityList"
     v-bind:userName="userName"
     v-bind:email="email"
+    v-bind:userId="userId"
   ></RegisterCircle>
 </template>
 
@@ -23,6 +24,9 @@ export default {
       type: String,
     },
     email: {
+      type: String,
+    },
+    userId: {
       type: String,
     },
   },

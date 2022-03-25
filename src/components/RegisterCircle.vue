@@ -126,6 +126,9 @@ export default {
     email: {
       type: String,
     },
+    userId: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -142,7 +145,7 @@ export default {
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
-      users: [], //登録したユーザー情報を格納する配列
+      userData: null, //登録したユーザー情報を格納する変数
     }
   },
   methods: {
@@ -171,29 +174,24 @@ export default {
         this.iconType = "fas fa-eye-slash"
       }
     },
-    registerCircle() {
-      if (this.userName === "" && this.email === "") {
+    async registerCircle() {
+      if (this.userName === "" && this.email === "" && this.userId === "") {
         alert("ログインしてから登録して下さい。")
       } else {
+        const userData = await getDoc(doc(db, "userData", this.userId))
+        this.userData = userData.data()
+        this.userData.registerCircle.push({
+          universityName: this.universityKey,
+          circleName: this.circleName,
+        })
         this.memberData.push({
           userName: this.userName,
           usermail: this.email,
         })
-        for (let i = 0; i < this.users.length; i++) {
-          if (
-            this.users[i].userName === this.userName &&
-            this.users[i].userMail === this.email
-          ) {
-            this.users[i].registerCircle.push({
-              universityName: this.universityKey,
-              circleName: this.circleName,
-            })
-            updateDoc(doc(db, "userData", "users"), {
-              userData: this.users,
-            })
-          }
-        }
-        setDoc(
+        await updateDoc(doc(db, "userData", this.userId), {
+          registerCircle: this.userData.registerCircle,
+        })
+        await setDoc(
           doc(
             collection(db, "univ", this.universityKey, "circle"),
             this.circleName
@@ -247,12 +245,8 @@ export default {
       }
     },
   },
-  async mounted() {
-    const userData = await getDoc(doc(db, "userData", "users"))
-    this.users = userData.data().userData
-  },
   unmounted() {
-    this.users.splice(0)
+    this.userData = ""
   },
 }
 </script>

@@ -21,6 +21,9 @@ export default {
     email: {
       type: String,
     },
+    userId: {
+      type: String,
+    },
   },
   data() {
     return {
