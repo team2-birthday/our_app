@@ -1,25 +1,21 @@
 <template>
-  <RegisterCircle
-    v-bind:circleLogin="circleLogin"
+  <CircleLogin
     v-bind:universityList="universityList"
     v-bind:userName="userName"
     v-bind:email="email"
     v-bind:userId="userId"
-  ></RegisterCircle>
+    v-on:circleLoginData="circleLoginDataMove"
+  ></CircleLogin>
 </template>
 
 <script>
-import RegisterCircle from "@/components/RegisterCircle.vue"
+import CircleLogin from "@/components/CircleLogin.vue"
 export default {
-  name: "RegisterCircleView",
+  name: "CircleLoginView",
   components: {
-    RegisterCircle,
+    CircleLogin,
   },
   props: {
-    circleLogin: {
-      type: Boolean,
-      require: true,
-    },
     userName: {
       type: String,
     },
@@ -833,6 +829,16 @@ export default {
         "和洋女子大学",
       ],
     }
+  },
+  methods: {
+    circleLoginDataMove(circleLoginState, circleLoginName, selectUniversity) {
+      this.$emit(
+        "circleLoginData",
+        circleLoginState,
+        circleLoginName,
+        selectUniversity
+      )
+    },
   },
 }
 </script>

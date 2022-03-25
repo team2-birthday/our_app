@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
+import MyPageView from "@/views/MyPageView.vue"
 import ShowCircle from "../views/ShowCircle.vue"
+import RegisterUser from "@/views/RegisterUserView.vue"
 import RegisterCircleView from "@/views/RegisterCircleView.vue"
+import CircleLoginView from "@/views/CircleLoginView.vue"
+import CircleEditView from "@/views/CircleEditView.vue"
 
 const routes = [
   {
@@ -19,6 +23,18 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
+    path: "/MyPage",
+    name: "MyPage",
+    component: MyPageView,
+    props: true,
+  },
+  {
+    path: "/registerUser",
+    name: "registerUser",
+    component: RegisterUser,
+    props: true,
+  },
+  {
     path: "/registerCircle",
     name: "registerCircle",
     component: RegisterCircleView,
@@ -27,6 +43,18 @@ const routes = [
     path: "/showCircle",
     name: "showCircle",
     component: ShowCircle,
+  },
+  {
+    path: "/circleLogin",
+    name: "circleLogin",
+    component: CircleLoginView,
+    props: true,
+  },
+  {
+    path: "/circleEdit",
+    name: "circleEdit",
+    component: CircleEditView,
+    props: true,
   },
 ]
 

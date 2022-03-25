@@ -6,32 +6,16 @@
     />
     <!--アイコン画像にリンク-->
   </head>
-  <div class="register-circle">
+  <div class="circle-edit-page">
     <div v-if="registerComplete">
-      <div>登録が完了しました</div>
+      <div>編集が完了しました</div>
       <div>下のリンクから戻って下さい</div>
       <router-link to="/">home</router-link>
     </div>
     <div v-else>
       <div>
-        <div>登録前にログインしてください</div>
         <div>学校名</div>
-        <select
-          name="university"
-          id="university"
-          v-model="universityKey"
-          required
-        >
-          <option value="">--学校名を選んでください--</option>
-          <option
-            v-for="(university, index) in universityList"
-            v-bind:key="index"
-            v-bind:value="university"
-          >
-            {{ university }}
-          </option>
-        </select>
-        <div class="error-message">※ 入力必須です</div>
+        <div>{{ universityName }}</div>
       </div>
       <div>
         <div>サークル名</div>
@@ -88,6 +72,15 @@
         </div>
       </div>
       <div>
+        サークルメンバー
+        <div v-for="(member, index) in memberData" v-bind:key="index">
+          {{ member.userName }}
+          <button v-on:click="memberDelete(index)" class="delete-btn">
+            削除
+          </button>
+        </div>
+      </div>
+      <div>
         <div>パスワード</div>
         <div>※ 編集時に使います</div>
         <input
@@ -105,7 +98,7 @@
         <div class="error-message">※ 入力必須です</div>
       </div>
       <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
-        登録
+        編集完了
       </button>
     </div>
   </div>
@@ -116,9 +109,13 @@ import { collection, setDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
   props: {
-    universityList: {
-      type: Array,
-      required: true,
+    circleLoginName: {
+      type: String,
+      require: true,
+    },
+    universityName: {
+      type: String,
+      require: true,
     },
     userName: {
       type: String,
@@ -136,11 +133,12 @@ export default {
       number: "",
       text: "",
       circleName: "",
-      universityKey: "", //現在どこの大学がselectされているのかを示す変数
       location: "", //活動場所をpushする変数
       schedule: "", //活動日程をpushする変数
       registerComplete: false, //サークルの登録したかどうかを確かめる変数
       memberData: [], //会員のデータを格納する変数
+      circleData: null, //編集するサークルのデータを格納する編集
+      registerPassword: "", //サークル登録時のパスワードの格納
       password: "", //編集時に入力するパスワードの設定に使う変数
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
@@ -163,6 +161,31 @@ export default {
     datePlaceDelete(data) {
       this.activeData.splice(data, 1)
     },
+    async memberDelete(member) {
+      const user = await getDoc(
+        doc(db, "userData", this.memberData[member].userId)
+      )
+      this.userData = user.data()
+      // メンバーは0人以下にならない
+      if (this.memberData.length > 1) {
+        if (
+          this.memberData[member].userName === this.userData.userName &&
+          this.memberData[member].usermail === this.userData.userMail
+        ) {
+          for (let i = 0; i < this.userData.registerCircle.length; i++) {
+            if (
+              this.userData.registerCircle[i].universityName ===
+                this.universityName &&
+              this.userData.registerCircle[i].circleName ===
+                this.circleLoginName
+            ) {
+              this.userData.registerCircle.splice(i, 1)
+              this.memberData.splice(member, 1)
+            }
+          }
+        }
+      }
+    },
     //パスワードの確認を行えるようにする関数
     passwordCheck() {
       this.typeChangeCheck = !this.typeChangeCheck
@@ -174,27 +197,11 @@ export default {
         this.iconType = "fas fa-eye-slash"
       }
     },
-    async registerCircle() {
-      if (this.userName === "" && this.email === "" && this.userId === "") {
-        alert("ログインしてから登録して下さい。")
-      } else {
-        const userData = await getDoc(doc(db, "userData", this.userId))
-        this.userData = userData.data()
-        this.userData.registerCircle.push({
-          universityName: this.universityKey,
-          circleName: this.circleName,
-        })
-        this.memberData.push({
-          userName: this.userName,
-          usermail: this.email,
-          userId: this.userId,
-        })
-        await updateDoc(doc(db, "userData", this.userId), {
-          registerCircle: this.userData.registerCircle,
-        })
-        await setDoc(
+    registerCircle() {
+      if (this.registerPassword === this.password) {
+        setDoc(
           doc(
-            collection(db, "univ", this.universityKey, "circle"),
+            collection(db, "univ", this.universityName, "circle"),
             this.circleName
           ),
           {
@@ -203,22 +210,27 @@ export default {
             schedule: this.activeData,
             text: this.text,
             memberData: this.memberData,
-            password: this.password,
+            password: this.registerPassword,
           }
         )
+        updateDoc(doc(db, "userData", this.userId), {
+          registerCircle: this.userData.registerCircle,
+        })
         this.number = ""
         this.circleName = ""
         this.activeData.splice(0)
+        this.memberData.splice(0)
         this.text = ""
-        this.password = ""
         this.registerComplete = true
+      } else {
+        alert("パスワードが違います。")
       }
     },
   },
   computed: {
     registerJudge() {
       if (
-        this.universityKey === "" ||
+        this.universityName === "" ||
         this.number <= 0 ||
         this.circleName === "" ||
         this.text === "" ||
@@ -246,64 +258,30 @@ export default {
       }
     },
   },
+  async mounted() {
+    this.$emit("circleEditing", true)
+    const circleEditData = await getDoc(
+      doc(
+        collection(db, "univ", this.universityName, "circle"),
+        this.circleLoginName
+      )
+    )
+    this.circleData = circleEditData.data()
+    this.activeData = this.circleData.schedule
+    this.circleName = this.circleData.name
+    this.number = this.circleData.number
+    this.text = this.circleData.text
+    this.memberData = this.circleData.memberData
+    this.registerPassword = this.circleData.password
+  },
   unmounted() {
-    this.userData = ""
+    this.$emit("circleEditing", false)
   },
 }
 </script>
 
 <style>
-.register-circle {
+.circle-edit-page {
   padding-top: 250px;
-}
-
-.error-message {
-  font-size: 12px;
-  color: #ff7676;
-  display: none; /* 非表示に */
-}
-/* :invalid時だけ隣の要素を表示 */
-input:invalid + .error-message {
-  display: block;
-}
-
-/* :invalid時だけ隣の要素を表示 */
-textarea:invalid + .error-message {
-  display: block;
-}
-
-/* :invalid時だけ隣の要素を表示 */
-select:invalid + .error-message {
-  display: block;
-}
-
-.input-lack {
-  font-size: 12px;
-  color: #ff7676;
-}
-
-.lackcheck {
-  display: none;
-}
-
-.delete-btn {
-  border: solid 1px black;
-  background-color: white;
-}
-.delete-btn:hover {
-  background-color: red;
-}
-
-.explanation {
-  resize: none;
-  display: inline-block;
-  width: 80%;
-  padding: 10px;
-  border: 1px solid #999;
-  box-sizing: border-box;
-  background-color: white;
-  margin: 0.5em 0;
-  line-height: 1.5;
-  font-family: Century;
 }
 </style>
