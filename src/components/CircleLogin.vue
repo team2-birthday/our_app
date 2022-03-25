@@ -126,6 +126,9 @@ export default {
     email: {
       type: String,
     },
+    userId: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -139,8 +142,8 @@ export default {
       loginComplete: false, //サークルログインの動作が一通り完了したかどうかを判別する変数
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       circleKey: "", //現在どこのサークルがselectされているのかを示す変数
+      userData: null, //登録したユーザー情報を格納する変数
       registerCircleList: [],
-      users: [], //登録したユーザー情報を格納する配列
     }
   },
   methods: {
@@ -167,8 +170,10 @@ export default {
       }
     },
     //サークルログインする関数
-    userCircleLogin() {
-      if (this.userName !== "" && this.email !== "") {
+    async userCircleLogin() {
+      if (this.userName !== "" && this.email !== "" && this.userId !== "") {
+        const userData = await getDoc(doc(db, "userData", this.userId))
+        this.userData = userData.data()
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
             this.circleKey.memberData[i].userName === this.userName &&
@@ -192,8 +197,10 @@ export default {
       }
     },
     //ユーザーの情報をサークルに保存しておく関数
-    userRegister() {
-      if (this.userName !== "" && this.email !== "") {
+    async userRegister() {
+      if (this.userName !== "" && this.email !== "" && this.userId !== "") {
+        const user = await getDoc(doc(db, "userData", this.userId))
+        this.userData = user.data()
         for (let i = 0; i < this.circleKey.memberData.length; i++) {
           if (
             this.circleKey.memberData[i].userName === this.userName &&
@@ -202,19 +209,10 @@ export default {
             this.memberDataPushed = true
             break
           } else if (i === this.circleKey.memberData.length - 1) {
-            for (let j = 0; j < this.users.length; j++) {
-              if (
-                this.users[j].userName === this.userName &&
-                this.users[j].userMail === this.email
-              ) {
-                console.log(this.users[j])
-                this.users[j].registerCircle.push({
-                  universityName: this.universityKey,
-                  circleName: this.circleKey.name,
-                })
-                break
-              }
-            }
+            this.userData.registerCircle.push({
+              universityName: this.universityKey,
+              circleName: this.circleKey.name,
+            })
             this.circleKey.memberData.push({
               userName: this.userName,
               usermail: this.email,
@@ -228,20 +226,17 @@ export default {
                 memberData: this.circleKey.memberData,
               }
             )
-            updateDoc(doc(db, "userData", "users"), {
-              userData: this.users,
+            updateDoc(doc(db, "userData", this.userId), {
+              registerCircle: this.userData.registerCircle,
             })
             this.registerComplete = true
+            break
           }
         }
       } else {
-        alert("ログインしてください")
+        alert("ユーザーログインしてください")
       }
     },
-  },
-  async mounted() {
-    const userData = await getDoc(doc(db, "userData", "users"))
-    this.users = userData.data().userData
   },
 }
 </script>

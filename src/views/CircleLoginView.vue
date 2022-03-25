@@ -3,6 +3,7 @@
     v-bind:universityList="universityList"
     v-bind:userName="userName"
     v-bind:email="email"
+    v-bind:userId="userId"
     v-on:circleLoginData="circleLoginDataMove"
   ></CircleLogin>
 </template>
