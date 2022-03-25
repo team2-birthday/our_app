@@ -4,6 +4,7 @@
     v-bind:universityName="universityName"
     v-bind:userName="userName"
     v-bind:email="email"
+    v-bind:userId="userId"
     v-on:circleEditing="circleEditing"
   ></CircleEdit>
 </template>
@@ -28,6 +29,9 @@ export default {
       type: String,
     },
     email: {
+      type: String,
+    },
+    userId: {
       type: String,
     },
   },

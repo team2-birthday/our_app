@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { collection, setDoc, doc, getDoc } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
   props: {
@@ -121,6 +121,9 @@ export default {
       type: String,
     },
     email: {
+      type: String,
+    },
+    userId: {
       type: String,
     },
   },
@@ -140,7 +143,7 @@ export default {
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
-      users: [], //登録したユーザー情報を格納する配列
+      userData: null, //登録したユーザー情報を格納する変数
     }
   },
   methods: {
@@ -158,15 +161,25 @@ export default {
     datePlaceDelete(data) {
       this.activeData.splice(data, 1)
     },
-    memberDelete(member) {
+    async memberDelete(member) {
+      const user = await getDoc(
+        doc(db, "userData", this.memberData[member].userId)
+      )
+      this.userData = user.data()
+      // メンバーは0人以下にならない
       if (this.memberData.length > 1) {
-        for (let i = 0; i < this.users.length; i++) {
-          if (
-            this.users[i].userName !== this.userName &&
-            this.users[i].userMail !== this.email
-          ) {
-            if (this.memberData[member].userName === this.users[i].userName) {
-              this.users[i].registerCircle.splice(i, 1)
+        if (
+          this.memberData[member].userName === this.userData.userName &&
+          this.memberData[member].usermail === this.userData.userMail
+        ) {
+          for (let i = 0; i < this.userData.registerCircle.length; i++) {
+            if (
+              this.userData.registerCircle[i].universityName ===
+                this.universityName &&
+              this.userData.registerCircle[i].circleName ===
+                this.circleLoginName
+            ) {
+              this.userData.registerCircle.splice(i, 1)
               this.memberData.splice(member, 1)
             }
           }
@@ -186,12 +199,6 @@ export default {
     },
     registerCircle() {
       if (this.registerPassword === this.password) {
-        if (this.memberData.length <= 0) {
-          this.memberData.push({
-            userName: this.userName,
-            usermail: this.email,
-          })
-        }
         setDoc(
           doc(
             collection(db, "univ", this.universityName, "circle"),
@@ -206,6 +213,9 @@ export default {
             password: this.registerPassword,
           }
         )
+        updateDoc(doc(db, "userData", this.userId), {
+          registerCircle: this.userData.registerCircle,
+        })
         this.number = ""
         this.circleName = ""
         this.activeData.splice(0)
@@ -256,8 +266,6 @@ export default {
         this.circleLoginName
       )
     )
-    const userData = await getDoc(doc(db, "userData", "users"))
-    this.users = userData.data().userData
     this.circleData = circleEditData.data()
     this.activeData = this.circleData.schedule
     this.circleName = this.circleData.name
@@ -268,7 +276,6 @@ export default {
   },
   unmounted() {
     this.$emit("circleEditing", false)
-    this.users.splice(0)
   },
 }
 </script>

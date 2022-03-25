@@ -187,6 +187,7 @@ export default {
         this.memberData.push({
           userName: this.userName,
           usermail: this.email,
+          userId: this.userId,
         })
         await updateDoc(doc(db, "userData", this.userId), {
           registerCircle: this.userData.registerCircle,

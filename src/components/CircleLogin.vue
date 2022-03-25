@@ -216,6 +216,7 @@ export default {
             this.circleKey.memberData.push({
               userName: this.userName,
               usermail: this.email,
+              userId: this.userId,
             })
             updateDoc(
               doc(
