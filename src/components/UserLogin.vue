@@ -72,6 +72,9 @@ export default {
     email: {
       type: String,
     },
+    userId: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -80,7 +83,10 @@ export default {
       typeChange: "password", //inputの属性を管理する変数
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
-      users: [], //登録したユーザー情報を格納する配列
+      userData: null, //登録したユーザー情報を格納する変数
+      userGetId: "",
+      userGetName: "",
+      userGetMail: "",
     }
   },
   methods: {
@@ -96,9 +102,6 @@ export default {
       }
     },
     async logInGoogle() {
-      await getDoc(doc(db, "userData", "users")).then((user) => {
-        this.users = user.data().userData
-      })
       const provider = new GoogleAuthProvider()
       const auth = getAuth()
       await signInWithPopup(auth, provider)
@@ -106,30 +109,40 @@ export default {
           const credential = GoogleAuthProvider.credentialFromResult(result)
           credential.accessToken
           result.user
-          for (let i = 0; i < this.users.length; i++) {
-            if (
-              this.users[i].userName === result.user.displayName &&
-              this.users[i].userMail === result.user.email &&
-              this.users[i].password === this.password
-            ) {
-              this.$emit(
-                "userDataUpgrade",
-                result.user.displayName,
-                result.user.email
-              )
-              this.userLogin = true
-              break
-            } else if (i === this.users.length - 1) {
-              alert("パスワードが違うか登録が完了していません")
-              this.logOutGoogle()
-            }
-          }
+          this.userGetId = result.user.uid
+          this.userGetName = result.user.displayName
+          this.userGetMail = result.user.email
         })
         .catch((error) => {
           error.code
           error.message
           error.email
           GoogleAuthProvider.credentialFromError(error)
+        })
+      await getDoc(doc(db, "userData", this.userGetId))
+        .then((user) => {
+          this.userData = user.data()
+          if (
+            this.userData.userName === this.userGetName &&
+            this.userData.userMail === this.userGetMail &&
+            this.userData.userId === this.userGetId &&
+            this.userData.password === this.password
+          ) {
+            this.$emit(
+              "userDataUpgrade",
+              this.userGetName,
+              this.userGetMail,
+              this.userGetId
+            )
+            this.userLogin = true
+          } else {
+            alert("パスワードが違います。")
+            this.logOutGoogle()
+          }
+        })
+        .catch(() => {
+          alert("登録が完了していません。")
+          this.logOutGoogle()
         })
     },
     logOutGoogle() {
@@ -141,7 +154,12 @@ export default {
           .then(() => {
             // Sign-out successful.
             const logoutString = ""
-            this.$emit("userDataUpgrade", logoutString, logoutString)
+            this.$emit(
+              "userDataUpgrade",
+              logoutString,
+              logoutString,
+              logoutString
+            )
             this.userLogin = false
           })
           .catch((error) => {

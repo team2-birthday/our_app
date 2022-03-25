@@ -136,7 +136,7 @@ export default {
       userCheck: false, //ユーザーがどのサークルに所属しているのかを登録したか確認する変数
       registerCircleCheck: false, //どのサークルに所属しているのかを登録したか確認する変数
       registerComplete: false, //どのサークルに所属しているのかを登録が完了したのか判別する変数
-      loginComplete: false, //サークルログインが完了したかどうかを判別する変数
+      loginComplete: false, //サークルログインの動作が一通り完了したかどうかを判別する変数
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
       circleKey: "", //現在どこのサークルがselectされているのかを示す変数
       registerCircleList: [],

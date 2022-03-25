@@ -54,6 +54,7 @@
     v-bind:universityName="universityName"
     v-bind:userName="userName"
     v-bind:email="email"
+    v-bind:userId="userId"
     class="router-view"
   />
 </template>
@@ -69,6 +70,7 @@ export default {
     return {
       userName: "",
       email: "",
+      userId: "",
       circleEditCheck: false, //サークル編集しているのかを確認する編集
       circleLogin: false,
       circleLoginName: "", //どこのサークルにログインしたかを表示する変数
@@ -77,9 +79,10 @@ export default {
     }
   },
   methods: {
-    userDataUpgrade(displayName, emailAddress) {
+    userDataUpgrade(displayName, emailAddress, uid) {
       this.userName = displayName
       this.email = emailAddress
+      this.userId = uid
     },
     circleLoginDataMove(
       currentCircleLogin,

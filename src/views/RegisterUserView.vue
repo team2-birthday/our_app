@@ -39,7 +39,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth"
-import { setDoc, doc, getDoc } from "firebase/firestore"
+import { setDoc, doc } from "firebase/firestore"
 import { db } from "@/firebase.js"
 export default {
   props: {
@@ -58,8 +58,8 @@ export default {
       iconType: "fas fa-eye",
       userNameNow: "",
       emailNow: "",
+      useridNow: "",
       userCircleRegister: [],
-      users: [], //登録したユーザー情報を格納する配列
     }
   },
   methods: {
@@ -85,15 +85,13 @@ export default {
           result.user
           this.userNameNow = result.user.displayName
           this.emailNow = result.user.email
-          console.log(this.userNameNow, this.emailNow)
-          this.users.push({
+          this.useridNow = result.user.uid
+          setDoc(doc(db, "userData", this.useridNow), {
             userName: this.userNameNow,
             userMail: this.emailNow,
+            userId: this.useridNow,
             password: this.password,
             registerCircle: this.userCircleRegister,
-          })
-          setDoc(doc(db, "userData", "users"), {
-            userData: this.users,
           })
         })
         .catch((error) => {
@@ -111,13 +109,6 @@ export default {
           console.error(error)
         })
     },
-  },
-  async mounted() {
-    const userData = await getDoc(doc(db, "userData", "users"))
-    this.users = userData.data().userData
-  },
-  unmounted() {
-    this.users.splice(0)
   },
 }
 </script>
