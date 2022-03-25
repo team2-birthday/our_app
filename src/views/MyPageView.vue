@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div v-for="(user, index) in users" v-bind:key="index">
-      <div>{{ user.userName }}</div>
-      <div>{{ user.userMail }}</div>
-    </div>
+    <div>{{ userData.userName }}</div>
+    <div>{{ userData.userMail }}</div>
     <div>
       <div>登録したサークル一覧</div>
-      <div v-if="id === -1">まだ何も登録をしていません</div>
+      <div v-if="userData.registerCircle.length === 0">
+        まだ何も登録をしていません
+      </div>
       <div v-else>
         <div
           class="block"
@@ -37,41 +37,36 @@ export default {
     email: {
       type: String,
     },
+    userId: {
+      type: String,
+    },
   },
   data() {
     return {
-      id: 0, //ログインしたユーザーがどこの要素に入っているのかを確認する変数
-      users: [], //登録したユーザー情報を格納する配列
+      userData: "", //登録したユーザー情報を格納する変数
       registerCircleData: [], //登録したサークルの情報を格納する変数
     }
   },
-  async beforeMount() {
-    const userData = await getDoc(doc(db, "userData", "users"))
-    this.users = userData.data().userData
-    for (let i = 0; i < this.users.length; i++) {
-      if (
-        this.userName === this.users[i].userName &&
-        this.email === this.users[i].userMail
-      ) {
-        this.id = i
-        for (let j = 0; j < this.users[this.id].registerCircle.length; j++) {
-          const circleData = await getDoc(
-            doc(
-              collection(
-                db,
-                "univ",
-                this.users[this.id].registerCircle[j].universityName,
-                "circle"
-              ),
-              this.users[this.id].registerCircle[j].circleName
-            )
+  async created() {
+    const user = await getDoc(doc(db, "userData", this.userId))
+    this.userData = user.data()
+    if (
+      this.userName === this.userData.userName &&
+      this.email === this.userData.userMail
+    ) {
+      for (let i = 0; i < this.userData.registerCircle.length; i++) {
+        const circleData = await getDoc(
+          doc(
+            collection(
+              db,
+              "univ",
+              this.userData.registerCircle[i].universityName,
+              "circle"
+            ),
+            this.userData.registerCircle[i].circleName
           )
-          this.registerCircleData.push(circleData.data())
-        }
-        break
-      } else if (i === this.users.length - 1) {
-        //何もサークルを登録していない場合はidを-1にする
-        this.id = -1
+        )
+        this.registerCircleData.push(circleData.data())
       }
     }
   },
@@ -79,7 +74,7 @@ export default {
     this.$emit("myPageStates", true)
   },
   unmounted() {
-    this.users.splice(0)
+    this.userData = null
     this.registerCircleData.splice(0)
     this.$emit("myPageStates", false)
   },
