@@ -1,20 +1,23 @@
 <template>
   <div>
-    <div>{{ userData.userName }}</div>
-    <div>{{ userData.userMail }}</div>
+    <div class="user-data">
+      <div>{{ userData.userName }}</div>
+      <div>{{ userData.userMail }}</div>
+    </div>
     <div>
-      <div>登録したサークル一覧</div>
+      <div class="item">登録したサークル一覧</div>
       <div v-if="registerCircleData.length === 0">
         まだ何も登録をしていません
       </div>
       <div v-else>
         <div
-          class="block"
+          class="circle-block"
           v-for="(data, index) in registerCircleData"
           v-bind:key="index"
         >
-          <div class="name">{{ data.name }}</div>
+          <div class="name">サークル名:{{ data.name }}</div>
           <div>人数：{{ data.number }}人</div>
+          <div>詳細</div>
           <div>{{ data.text }}</div>
           <div>開催日程：場所</div>
           <div v-for="(plan, index) in data.schedule" v-bind:key="index">
@@ -82,10 +85,51 @@ export default {
 </script>
 
 <style>
-.block {
+.user-data {
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  text-align: left;
+  margin-left: 2%;
+  margin-bottom: 2%;
+  font-size: 30px;
+}
+
+.item {
+  font-size: 20px;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  width: auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 2em;
+  position: relative;
+  margin: 3em 0 2em;
+  color: #1e7aca; /* フォント色 */
+}
+
+.item::before {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1e7aca 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.circle-block {
   /* display: flex; */
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
   border: solid 2px black;
   border-radius: 5px;
   text-align: center;
+  margin-bottom: 3%;
 }
 </style>
