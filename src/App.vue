@@ -5,7 +5,6 @@
       <div class="router-link">
         <nav>
           <router-link to="/">Home</router-link>
-          <router-link to="/about">About</router-link>
           <router-link to="/showcircle">show</router-link>
           <router-link to="/registerCircle">サークル登録</router-link>
           <router-link to="/circleLogin"

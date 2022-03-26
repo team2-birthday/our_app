@@ -13,43 +13,45 @@
       <router-link to="/">home</router-link>
     </div>
     <div v-else>
-      <div>
-        <div>登録前にログインしてください</div>
-        <div>学校名</div>
-        <select
-          name="university"
-          id="university"
-          v-model="universityKey"
-          required
-        >
-          <option value="">--学校名を選んでください--</option>
-          <option
-            v-for="(university, index) in universityList"
-            v-bind:key="index"
-            v-bind:value="university"
+      <div class="attention">登録前にログインしてください</div>
+      <div class="first-detail">
+        <div class="detail">
+          <div class="item">学校名</div>
+          <select
+            name="university"
+            id="university"
+            v-model="universityKey"
+            required
           >
-            {{ university }}
-          </option>
-        </select>
-        <div class="error-message">※ 入力必須です</div>
+            <option value="">--学校名を選んでください--</option>
+            <option
+              v-for="(university, index) in universityList"
+              v-bind:key="index"
+              v-bind:value="university"
+            >
+              {{ university }}
+            </option>
+          </select>
+          <div class="error-message">※ 入力必須です</div>
+        </div>
+        <div class="detail">
+          <div class="item">サークル名</div>
+          <input
+            type="text"
+            v-model="circleName"
+            placeholder="サークル名"
+            required
+          />
+          <div class="error-message">※ 入力必須です</div>
+        </div>
+        <div class="detail">
+          <div class="item">サークルの所属している人数</div>
+          <input type="number" v-model="number" placeholder="人数" required />
+          <div class="error-message">※ 入力必須です</div>
+        </div>
       </div>
       <div>
-        <div>サークル名</div>
-        <input
-          type="text"
-          v-model="circleName"
-          placeholder="サークル名"
-          required
-        />
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <div>
-        サークルの所属している人数
-        <input type="number" v-model="number" placeholder="人数" required />
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <div>
-        <div>説明文</div>
+        <div class="item">説明文</div>
         <textarea
           type="text"
           v-model="text"
@@ -61,17 +63,22 @@
         <div class="error-message">※ 入力必須です</div>
       </div>
       <div>
-        活動日程と活動場所
+        <div class="item">活動日程と活動場所</div>
         <div>
-          <input type="date" v-model="schedule" required />
+          <input type="date" class="schedule" v-model="schedule" required />
           <input
             type="text"
+            class="schedule"
             v-model="location"
             placeholder="活動場所"
             required
           />
           <div>
-            <button v-on:click="activePush" v-bind:disabled="inputCheck">
+            <button
+              v-on:click="activePush"
+              v-bind:disabled="inputCheck"
+              class="schedule-register-btn"
+            >
               日程と場所登録
             </button>
           </div>
@@ -79,7 +86,7 @@
             ※ 入力必須です
           </div>
         </div>
-        現在登録した日程とその日の活動場所（削除可能）
+        <div class="item">現在登録した日程とその日の活動場所（削除可能）</div>
         <div v-for="(data, index) in activeData" v-bind:key="index">
           {{ data.date }}:{{ data.place }}
           <button v-on:click="datePlaceDelete(index)" class="delete-btn">
@@ -88,7 +95,7 @@
         </div>
       </div>
       <div>
-        <div>パスワード</div>
+        <div class="item">パスワード</div>
         <div>※ 編集時に使います</div>
         <input
           v-bind:type="typeChange"
@@ -104,7 +111,11 @@
         ><!--アイコン表示場所-->
         <div class="error-message">※ 入力必須です</div>
       </div>
-      <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
+      <button
+        class="register-btn"
+        v-on:click="registerCircle"
+        v-bind:disabled="registerJudge"
+      >
         登録
       </button>
     </div>
@@ -254,7 +265,64 @@ export default {
 
 <style>
 .register-circle {
-  padding-top: 250px;
+  padding-top: 15%;
+}
+
+.attention {
+  font-size: 30px;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  width: 100%;
+  margin-bottom: 1%;
+  line-height: 0.95em;
+  font-weight: bold;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    #0091ea 0% 30%,
+    #00b0ff 40% 60%,
+    #80d8ff 70% 100%
+  );
+  background-clip: text;
+}
+
+.item {
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  width: auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 2em;
+  position: relative;
+  margin: 3em 0 2em;
+  color: #1e7aca; /* フォント色 */
+}
+
+.item::before {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1e7aca 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.first-detail {
+  width: 100%;
+  margin-bottom: 1%;
+}
+
+.detail {
+  display: inline-block;
+  margin-right: 7%;
+  margin-left: 7%;
 }
 
 .error-message {
@@ -282,16 +350,52 @@ select:invalid + .error-message {
   color: #ff7676;
 }
 
+.schedule {
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+}
+
+.schedule-register-btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+  transition: 0.4s;
+  margin: 1%;
+}
+
+.schedule-register-btn:hover {
+  background-image: linear-gradient(#6795fd 0%, #67ceff 70%);
+}
+
 .lackcheck {
   display: none;
 }
 
 .delete-btn {
-  border: solid 1px black;
-  background-color: white;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#fd6767 0%, #df3131 100%);
+  transition: 0.4s;
 }
 .delete-btn:hover {
-  background-color: red;
+  background-image: linear-gradient(#fd6767 0%, #df3131 70%);
+}
+
+.register-btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+  transition: 0.4s;
+  margin: 1%;
+}
+
+.register-btn:hover {
+  background-image: linear-gradient(#6795fd 0%, #67ceff 70%);
 }
 
 .explanation {
