@@ -206,7 +206,9 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #0039f3;
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .circle-edit {
