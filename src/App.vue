@@ -2,11 +2,33 @@
   <div class="header">
     <div class="login-prodact-name">
       <div class="prodact-name">プロダクト名</div>
+      <div class="router-link">
+        <nav>
+          <router-link to="/">Home</router-link>
+          <router-link to="/about">About</router-link>
+          <router-link to="/showcircle">show</router-link>
+          <router-link to="/registerCircle">サークル登録</router-link>
+          <router-link to="/circleLogin"
+            >自分の所属しているサークルにログイン</router-link
+          >
+          <div
+            class="circle-edit"
+            v-if="userName.length > 0 && email.length > 0"
+          >
+            <router-link to="/MyPage">マイページ</router-link>
+          </div>
+          <div class="circle-edit" v-if="circleLogin">
+            <router-link to="/circleEdit">サークル内容の編集</router-link>
+          </div>
+        </nav>
+      </div>
       <div class="login">
         <div>
-          <router-link to="/registerUser" class="user-register"
-            >ユーザー登録</router-link
-          >
+          <nav>
+            <router-link to="/registerUser" class="user-register"
+              >ユーザー登録</router-link
+            >
+          </nav>
           <UserLogin
             v-bind:circleLogin="circleLogin"
             v-bind:userName="userName"
@@ -16,6 +38,8 @@
             v-on:circleLogout="circleLogout"
           ></UserLogin>
         </div>
+      </div>
+      <div v-bind:class="login">
         <div v-if="circleLogin">
           <div class="circle-login">サークル:{{ circleLoginName }}</div>
           <button
@@ -27,23 +51,6 @@
           </button>
         </div>
       </div>
-    </div>
-    <div class="router-link">
-      <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-        <router-link to="/showcircle">show</router-link>
-        <router-link to="/registerCircle">サークル登録</router-link>
-        <router-link to="/circleLogin"
-          >自分の所属しているサークルにログイン</router-link
-        >
-        <div class="circle-edit" v-if="userName.length > 0 && email.length > 0">
-          <router-link to="/MyPage">マイページ</router-link>
-        </div>
-        <div class="circle-edit" v-if="circleLogin">
-          <router-link to="/circleEdit">サークル内容の編集</router-link>
-        </div>
-      </nav>
     </div>
   </div>
   <router-view
@@ -72,6 +79,7 @@ export default {
       userName: "",
       email: "",
       userId: "",
+      login: "", //サークルログインされたらloginというクラスを付与
       circleEditCheck: false, //サークル編集しているのかを確認する編集
       circleLogin: false,
       circleLoginName: "", //どこのサークルにログインしたかを表示する変数
@@ -91,6 +99,7 @@ export default {
       selectUniversity
     ) {
       this.circleLogin = currentCircleLogin
+      this.login = "login"
       this.circleLoginName = currentCircleLoginName
       this.universityName = selectUniversity
     },
@@ -98,6 +107,7 @@ export default {
       this.circleLogin = false
       this.circleLoginName = ""
       this.universityName = ""
+      this.login = ""
     },
     circleEditing(circleEdit) {
       this.circleEditCheck = circleEdit
@@ -138,15 +148,16 @@ body {
 }
 
 .router-link {
-  display: flex;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 nav {
   display: flex;
   align-items: center; /*上下中央揃え*/
-  border-left: 2px solid black;
-  border-bottom: 2px solid black;
-  margin-left: auto;
+  justify-content: center;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
 }
 
 a {
@@ -171,6 +182,7 @@ a {
   font-size: 13px;
   margin: 1%;
   margin-left: auto;
+  display: inline;
 }
 
 .user-register {
@@ -191,7 +203,7 @@ a {
 
 nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 nav a.router-link-exact-active {
