@@ -1,105 +1,107 @@
 <template>
-  <head>
-    <link
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      rel="stylesheet"
-    />
-    <!--アイコン画像にリンク-->
-  </head>
-  <div class="circle-edit-page">
-    <div v-if="registerComplete">
-      <div>編集が完了しました</div>
-      <div>下のリンクから戻って下さい</div>
-      <router-link to="/">home</router-link>
-    </div>
-    <div v-else>
-      <div>
-        <div>学校名</div>
-        <div>{{ universityName }}</div>
+  <div>
+    <head>
+      <link
+        href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        rel="stylesheet"
+      />
+      <!--アイコン画像にリンク-->
+    </head>
+    <div class="circle-edit-page">
+      <div v-if="registerComplete">
+        <div>編集が完了しました</div>
+        <div>下のリンクから戻って下さい</div>
+        <router-link to="/">home</router-link>
       </div>
-      <div>
-        <div>サークル名</div>
-        <input
-          type="text"
-          v-model="circleName"
-          placeholder="サークル名"
-          required
-        />
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <div>
-        サークルの所属している人数
-        <input type="number" v-model="number" placeholder="人数" required />
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <div>
-        <div>説明文</div>
-        <textarea
-          type="text"
-          v-model="text"
-          rows="10"
-          class="explanation"
-          placeholder="ここにサークルの詳細を入力してください"
-          required
-        />
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <div>
-        活動日程と活動場所
+      <div v-else>
         <div>
-          <input type="date" v-model="schedule" required />
+          <div>学校名</div>
+          <div>{{ universityName }}</div>
+        </div>
+        <div>
+          <div>サークル名</div>
           <input
             type="text"
-            v-model="location"
-            placeholder="活動場所"
+            v-model="circleName"
+            placeholder="サークル名"
             required
           />
+          <div class="error-message">※ 入力必須です</div>
+        </div>
+        <div>
+          サークルの所属している人数
+          <input type="number" v-model="number" placeholder="人数" required />
+          <div class="error-message">※ 入力必須です</div>
+        </div>
+        <div>
+          <div>説明文</div>
+          <textarea
+            type="text"
+            v-model="text"
+            rows="10"
+            class="explanation"
+            placeholder="ここにサークルの詳細を入力してください"
+            required
+          />
+          <div class="error-message">※ 入力必須です</div>
+        </div>
+        <div>
+          活動日程と活動場所
           <div>
-            <button v-on:click="activePush" v-bind:disabled="inputCheck">
-              日程と場所登録
+            <input type="date" v-model="schedule" required />
+            <input
+              type="text"
+              v-model="location"
+              placeholder="活動場所"
+              required
+            />
+            <div>
+              <button v-on:click="activePush" v-bind:disabled="inputCheck">
+                日程と場所登録
+              </button>
+            </div>
+            <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
+              ※ 入力必須です
+            </div>
+          </div>
+          現在登録した日程とその日の活動場所（削除可能）
+          <div v-for="(data, index) in activeData" v-bind:key="index">
+            {{ data.date }}:{{ data.place }}
+            <button v-on:click="datePlaceDelete(index)" class="delete-btn">
+              削除
             </button>
           </div>
-          <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
-            ※ 入力必須です
+        </div>
+        <div>
+          サークルメンバー
+          <div v-for="(member, index) in memberData" v-bind:key="index">
+            {{ member.userName }}
+            <button v-on:click="memberDelete(index)" class="delete-btn">
+              削除
+            </button>
           </div>
         </div>
-        現在登録した日程とその日の活動場所（削除可能）
-        <div v-for="(data, index) in activeData" v-bind:key="index">
-          {{ data.date }}:{{ data.place }}
-          <button v-on:click="datePlaceDelete(index)" class="delete-btn">
-            削除
-          </button>
+        <div>
+          <div>パスワード</div>
+          <div>※ 編集時に使います</div>
+          <input
+            v-bind:type="typeChange"
+            v-model="password"
+            minlength="8"
+            maxlength="15"
+            size="15"
+            pattern="[a-zA-Z0-9]+"
+            title="パスワードは(8~15文字)半角英数字で入力してください。"
+            required
+          />
+          <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
+          ><!--アイコン表示場所-->
+          <div class="error-message">※ 入力必須です</div>
         </div>
+        <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
+          編集完了
+        </button>
       </div>
-      <div>
-        サークルメンバー
-        <div v-for="(member, index) in memberData" v-bind:key="index">
-          {{ member.userName }}
-          <button v-on:click="memberDelete(index)" class="delete-btn">
-            削除
-          </button>
-        </div>
-      </div>
-      <div>
-        <div>パスワード</div>
-        <div>※ 編集時に使います</div>
-        <input
-          v-bind:type="typeChange"
-          v-model="password"
-          minlength="8"
-          maxlength="15"
-          size="15"
-          pattern="[a-zA-Z0-9]+"
-          title="パスワードは(8~15文字)半角英数字で入力してください。"
-          required
-        />
-        <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
-        ><!--アイコン表示場所-->
-        <div class="error-message">※ 入力必須です</div>
-      </div>
-      <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
-        編集完了
-      </button>
     </div>
   </div>
 </template>

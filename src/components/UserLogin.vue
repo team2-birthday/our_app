@@ -1,48 +1,50 @@
 <template>
-  <head>
-    <link
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      rel="stylesheet"
-    />
-    <!--アイコン画像にリンク-->
-  </head>
   <div>
-    <div>
-      <div class="user-login">
-        {{ userName }}
-      </div>
-      <div class="user-login">
-        {{ email }}
-      </div>
-    </div>
-    <div v-if="userLogin === false">
-      <div>パスワード</div>
-      <input
-        v-bind:type="typeChange"
-        v-model="password"
-        minlength="8"
-        maxlength="15"
-        size="15"
-        pattern="[a-zA-Z0-9]+"
-        title="パスワードは(8~15文字)半角英数字で入力してください。"
-        required
+    <head>
+      <link
+        href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        rel="stylesheet"
       />
-      <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
-      ><!--アイコン表示場所-->
+      <!--アイコン画像にリンク-->
+    </head>
+    <div>
       <div>
-        <button v-on:click="logInGoogle" class="login-logout-btn">
-          ログイン
+        <div class="user-login">
+          {{ userName }}
+        </div>
+        <div class="user-login">
+          {{ email }}
+        </div>
+      </div>
+      <div v-if="userLogin === false">
+        <div>パスワード</div>
+        <input
+          v-bind:type="typeChange"
+          v-model="password"
+          minlength="8"
+          maxlength="15"
+          size="15"
+          pattern="[a-zA-Z0-9]+"
+          title="パスワードは(8~15文字)半角英数字で入力してください。"
+          required
+        />
+        <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
+        ><!--アイコン表示場所-->
+        <div>
+          <button v-on:click="logInGoogle" class="login-logout-btn">
+            ログイン
+          </button>
+        </div>
+      </div>
+      <div v-else>
+        <button
+          v-on:click="logOutGoogle"
+          v-bind:disabled="myPageOpen"
+          class="login-logout-btn"
+        >
+          ログアウト
         </button>
       </div>
-    </div>
-    <div v-else>
-      <button
-        v-on:click="logOutGoogle"
-        v-bind:disabled="myPageOpen"
-        class="login-logout-btn"
-      >
-        ログアウト
-      </button>
     </div>
   </div>
 </template>

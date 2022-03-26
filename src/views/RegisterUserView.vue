@@ -1,34 +1,39 @@
 <template>
-  <head>
-    <link
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      rel="stylesheet"
-    />
-    <!--アイコン画像にリンク-->
-  </head>
-  <div class="register-user" v-if="userName.length === 0 && email.length === 0">
-    <div>ログインしていないユーザーはまず登録お願いします</div>
-    <div>パスワードを決めて下さい</div>
-    <input
-      v-bind:type="typeChange"
-      v-model="password"
-      minlength="8"
-      maxlength="15"
-      size="15"
-      pattern="[a-zA-Z0-9]+"
-      title="パスワードは(8~15文字)半角英数字で入力してください。"
-      required
-    />
-    <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
-    ><!--アイコン表示場所-->
-    <div class="error-message">※ 入力必須です</div>
-    <div>
-      <button v-on:click="registerUser">登録</button>
+  <div>
+    <head>
+      <link
+        href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        rel="stylesheet"
+      />
+      <!--アイコン画像にリンク-->
+    </head>
+    <div
+      class="register-user"
+      v-if="userName.length === 0 && email.length === 0"
+    >
+      <div>ログインしていないユーザーはまず登録お願いします</div>
+      <div>パスワードを決めて下さい</div>
+      <input
+        v-bind:type="typeChange"
+        v-model="password"
+        minlength="8"
+        maxlength="15"
+        size="15"
+        pattern="[a-zA-Z0-9]+"
+        title="パスワードは(8~15文字)半角英数字で入力してください。"
+        required
+      />
+      <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
+      ><!--アイコン表示場所-->
+      <div class="error-message">※ 入力必須です</div>
+      <div>
+        <button v-on:click="registerUser">登録</button>
+      </div>
     </div>
-  </div>
-  <div v-else class="register-user">
-    <div>現在ログイン中です</div>
-    <router-link to="/">Home</router-link>
+    <div v-else class="register-user">
+      <div>現在ログイン中です</div>
+      <router-link to="/">Home</router-link>
+    </div>
   </div>
 </template>
 

@@ -4,7 +4,7 @@
     <div>{{ userData.userMail }}</div>
     <div>
       <div>登録したサークル一覧</div>
-      <div v-if="userData.registerCircle.length === 0">
+      <div v-if="registerCircleData.length === 0">
         まだ何も登録をしていません
       </div>
       <div v-else>
