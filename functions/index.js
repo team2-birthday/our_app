@@ -1,34 +1,60 @@
-const functions = require("firebase-functions")
+const {
+  initializeApp,
+  applicationDefault,
+  cert,
+} = require("firebase-admin/app")
+const {
+  getFirestore,
+  Timestamp,
+  FieldValue,
+} = require("firebase-admin/firestore")
 const nodemailer = require("nodemailer")
-const gmailEmail = "phasi.ok.phasi@gmail.com"
-const gmailPassword = "7aThUstOstE9o"
-const mailTransport = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: gmailEmail,
-    pass: gmailPassword,
-  },
-})
-const admin = require("firebase-admin")
-admin.initializeApp()
+const functions = require("firebase-functions")
+const gmailEmail = "komiyo.univ334@gmail.com"
 
-const getData = async () => {
-  const data = await admin.firestore().collection("univ")
+const docList = []
+
+initializeApp()
+
+const db = getFirestore()
+
+const auth = {
+  type: "OAuth2",
+  user: gmailEmail,
+  clientId:
+    "160429130531-e074odivtou9aikigcdk38ud43l14g87.apps.googleusercontent.com",
+  clientSecret: "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",
+  refreshToken:
+    "1//04red5sx8O5PwCgYIARAAGAQSNwF-L9IrfmFxeiwcz_5rzMBfmq5GR-X42yEMQGg7dSpHyWwKVntXnAEbAv-ydNSb-y-bft3nRLc",
 }
-const f = (context) => {
-  let email = {
-    from: gmailEmail,
-    to: "komiyo.univ334@gmail.com",
-    subject: "活動のお知らせ",
-    text: "活動日が近づいてきました。",
-  }
-  mailTransport.sendMail(email, (err, info) => {
-    if (err) {
-      return console.log(err)
-    }
-    return console.log("success")
+
+const transport = {
+  service: "gmail",
+  auth,
+}
+
+const transporter = nodemailer.createTransport(transport)
+
+const sendTo = async function () {
+  const booksCollection = await db.collection("userData").get()
+  booksCollection.forEach((doc) => {
+    console.log(doc.id, "=>", doc.data())
+    docList.push(doc)
   })
 }
-exports.sendMail = functions.https.onCall(f)
 
-exports.scheduledFunction = functions.pubsub.schedule("every 1 minutes").onRun()
+const mailOptions = (email, date, circleName) => {
+  return {
+    from: gmailEmail,
+    to: email,
+    subject: "サークルの活動日が近づいてきました",
+    text: ,
+  }
+}
+
+exports.sendMail = functions.https.onCall(async (data, context) => {
+  const x = await sendTo()
+  // transporter.sendMail(mailOptions, (err, response) => {
+  //   console.log(err || response)
+  // })
+})
