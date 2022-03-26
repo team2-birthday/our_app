@@ -97,7 +97,7 @@
           maxlength="15"
           size="15"
           pattern="[a-zA-Z0-9]+"
-          title="パスワードは(8~15文字)半角英数字で入力してください。"
+          placeholder="8~15文字"
           required
         />
         <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
