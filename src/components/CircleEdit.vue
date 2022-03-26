@@ -8,33 +8,35 @@
       <!--アイコン画像にリンク-->
     </head>
     <div class="circle-edit-page">
-      <div v-if="registerComplete">
+      <div v-if="registerComplete" class="edit-complete">
         <div>編集が完了しました</div>
         <div>下のリンクから戻って下さい</div>
-        <router-link to="/">home</router-link>
+        <router-link to="/" class="return-link">Home</router-link>
       </div>
       <div v-else>
-        <div>
-          <div>学校名</div>
-          <div>{{ universityName }}</div>
+        <div class="first-detail">
+          <div class="detail">
+            <div class="item">学校名</div>
+            <div>{{ universityName }}</div>
+          </div>
+          <div class="detail">
+            <div class="item">サークル名</div>
+            <input
+              type="text"
+              v-model="circleName"
+              placeholder="サークル名"
+              required
+            />
+            <div class="error-message">※ 入力必須です</div>
+          </div>
+          <div class="detail">
+            <div class="item">サークルの所属している人数</div>
+            <input type="number" v-model="number" placeholder="人数" required />
+            <div class="error-message">※ 入力必須です</div>
+          </div>
         </div>
         <div>
-          <div>サークル名</div>
-          <input
-            type="text"
-            v-model="circleName"
-            placeholder="サークル名"
-            required
-          />
-          <div class="error-message">※ 入力必須です</div>
-        </div>
-        <div>
-          サークルの所属している人数
-          <input type="number" v-model="number" placeholder="人数" required />
-          <div class="error-message">※ 入力必須です</div>
-        </div>
-        <div>
-          <div>説明文</div>
+          <div class="item">説明文</div>
           <textarea
             type="text"
             v-model="text"
@@ -46,7 +48,7 @@
           <div class="error-message">※ 入力必須です</div>
         </div>
         <div>
-          活動日程と活動場所
+          <div class="item">活動日程と活動場所</div>
           <div>
             <input type="date" v-model="schedule" required />
             <input
@@ -56,7 +58,11 @@
               required
             />
             <div>
-              <button v-on:click="activePush" v-bind:disabled="inputCheck">
+              <button
+                v-on:click="activePush"
+                v-bind:disabled="inputCheck"
+                class="schedule-register-btn"
+              >
                 日程と場所登録
               </button>
             </div>
@@ -64,7 +70,7 @@
               ※ 入力必須です
             </div>
           </div>
-          現在登録した日程とその日の活動場所（削除可能）
+          <div class="item">現在登録した日程とその日の活動場所（削除可能）</div>
           <div v-for="(data, index) in activeData" v-bind:key="index">
             {{ data.date }}:{{ data.place }}
             <button v-on:click="datePlaceDelete(index)" class="delete-btn">
@@ -73,7 +79,7 @@
           </div>
         </div>
         <div>
-          サークルメンバー
+          <div class="item">サークルメンバー</div>
           <div v-for="(member, index) in memberData" v-bind:key="index">
             {{ member.userName }}
             <button v-on:click="memberDelete(index)" class="delete-btn">
@@ -82,7 +88,7 @@
           </div>
         </div>
         <div>
-          <div>パスワード</div>
+          <div class="item">パスワード</div>
           <div>※ 編集時に使います</div>
           <input
             v-bind:type="typeChange"
@@ -98,7 +104,11 @@
           ><!--アイコン表示場所-->
           <div class="error-message">※ 入力必須です</div>
         </div>
-        <button v-on:click="registerCircle" v-bind:disabled="registerJudge">
+        <button
+          class="edit-btn"
+          v-on:click="registerCircle"
+          v-bind:disabled="registerJudge"
+        >
           編集完了
         </button>
       </div>
@@ -146,6 +156,8 @@ export default {
       typeChangeCheck: true, //input属性を切り替える変数
       iconType: "fas fa-eye",
       userData: null, //登録したユーザー情報を格納する変数
+      userDeletecount: 0, //ユーザーを削除した回数をカウントする変数
+      userDeleteData: [], //削除するユーザーのデータを格納
     }
   },
   methods: {
@@ -183,6 +195,8 @@ export default {
             ) {
               this.userData.registerCircle.splice(i, 1)
               this.memberData.splice(member, 1)
+              this.userDeletecount++
+              this.userDeleteData.push(this.userData)
             }
           }
         }
@@ -199,9 +213,9 @@ export default {
         this.iconType = "fas fa-eye-slash"
       }
     },
-    registerCircle() {
+    async registerCircle() {
       if (this.registerPassword === this.password) {
-        setDoc(
+        await setDoc(
           doc(
             collection(db, "univ", this.universityName, "circle"),
             this.circleName
@@ -215,14 +229,25 @@ export default {
             password: this.registerPassword,
           }
         )
-        updateDoc(doc(db, "userData", this.userId), {
-          registerCircle: this.userData.registerCircle,
-        })
         this.number = ""
         this.circleName = ""
         this.activeData.splice(0)
         this.memberData.splice(0)
         this.text = ""
+        if (this.userDeletecount > 0) {
+          for (let i = 0; i < this.userDeletecount; i++) {
+            console.log(
+              this.userDeleteData[i].userId,
+              this.userDeleteData[i].registerCircle
+            )
+            await updateDoc(
+              doc(db, "userData", this.userDeleteData[i].userId),
+              {
+                registerCircle: this.userDeleteData[i].registerCircle,
+              }
+            )
+          }
+        }
         this.registerComplete = true
       } else {
         alert("パスワードが違います。")
@@ -262,6 +287,7 @@ export default {
   },
   async mounted() {
     this.$emit("circleEditing", true)
+    this.$emit("myPageStates", true)
     const circleEditData = await getDoc(
       doc(
         collection(db, "univ", this.universityName, "circle"),
@@ -277,13 +303,107 @@ export default {
     this.registerPassword = this.circleData.password
   },
   unmounted() {
+    this.$emit("myPageStates", false)
     this.$emit("circleEditing", false)
   },
 }
 </script>
 
 <style>
+.edit-complete {
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+}
+
+.return-link {
+  font-size: 40px;
+  background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .circle-edit-page {
-  padding-top: 250px;
+  padding-top: 1%;
+}
+
+.item {
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+  width: auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 2em;
+  position: relative;
+  margin: 3em 0 2em;
+  color: #1e7aca; /* フォント色 */
+}
+
+.item::before {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1e7aca 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+.first-detail {
+  width: 100%;
+  margin-bottom: 1%;
+}
+
+.detail {
+  display: inline-block;
+  margin-right: 7%;
+  margin-left: 7%;
+}
+.schedule {
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+}
+
+.schedule-register-btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+  transition: 0.4s;
+  margin: 1%;
+}
+
+.schedule-register-btn:hover {
+  background-image: linear-gradient(#6795fd 0%, #67ceff 70%);
+}
+
+.delete-btn {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#fd6767 0%, #df3131 100%);
+  transition: 0.4s;
+}
+.delete-btn:hover {
+  background-image: linear-gradient(#fd6767 0%, #df3131 70%);
+}
+
+.edit-btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+  transition: 0.4s;
+  margin: 1%;
+}
+
+.edit-btn:hover {
+  background-image: linear-gradient(#6795fd 0%, #67ceff 70%);
 }
 </style>

@@ -214,7 +214,7 @@ nav a.router-link-exact-active {
 }
 
 .router-view {
-  padding-top: 250px;
+  padding-top: 15%;
   z-index: 0;
 }
 </style>

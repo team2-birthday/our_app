@@ -7,10 +7,10 @@
     <!--アイコン画像にリンク-->
   </head>
   <div class="register-circle">
-    <div v-if="registerComplete">
+    <div v-if="registerComplete" class="register-complete">
       <div>登録が完了しました</div>
       <div>下のリンクから戻って下さい</div>
-      <router-link to="/">home</router-link>
+      <router-link to="/" class="return-link">Home</router-link>
     </div>
     <div v-else>
       <div class="attention">登録前にログインしてください</div>
@@ -266,6 +266,18 @@ export default {
 <style>
 .register-circle {
   padding-top: 15%;
+}
+
+.register-complete {
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+}
+
+.return-link {
+  font-size: 40px;
+  background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .attention {
