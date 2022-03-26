@@ -13,6 +13,7 @@
             v-bind:email="email"
             v-bind:myPageOpen="myPageOpen"
             v-on:userDataUpgrade="userDataUpgrade"
+            v-on:circleLogout="circleLogout"
           ></UserLogin>
         </div>
         <div v-if="circleLogin">

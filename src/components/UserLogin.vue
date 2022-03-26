@@ -150,25 +150,24 @@ export default {
     logOutGoogle() {
       const auth = getAuth()
       if (this.circleLogin) {
-        alert("まずサークルログアウトしてください")
-      } else {
-        signOut(auth)
-          .then(() => {
-            // Sign-out successful.
-            const logoutString = ""
-            this.$emit(
-              "userDataUpgrade",
-              logoutString,
-              logoutString,
-              logoutString
-            )
-            this.userLogin = false
-          })
-          .catch((error) => {
-            // An error happened.
-            console.error(error)
-          })
+        this.$emit("circleLogout")
       }
+      signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+          const logoutString = ""
+          this.$emit(
+            "userDataUpgrade",
+            logoutString,
+            logoutString,
+            logoutString
+          )
+          this.userLogin = false
+        })
+        .catch((error) => {
+          // An error happened.
+          console.error(error)
+        })
     },
   },
 }
