@@ -11,7 +11,7 @@
         </div>
       </div>
       <div v-else>
-        <div>登録完了しました。</div>
+        <div>{{ userNameNow }}さん登録完了しました。</div>
         <div>下のリンクから戻って下さい。</div>
         <router-link to="/">Home</router-link>
       </div>
@@ -53,10 +53,10 @@ export default {
   },
   methods: {
     //ユーザー登録を行う関数
-    registerUser() {
+    async registerUser() {
       const provider = new GoogleAuthProvider()
       const auth = getAuth()
-      signInWithPopup(auth, provider)
+      await signInWithPopup(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result)
           credential.accessToken
@@ -77,7 +77,7 @@ export default {
           error.email
           GoogleAuthProvider.credentialFromError(error)
         })
-      signOut(auth)
+      await signOut(auth)
         .then(() => {
           // Sign-out successful.
         })

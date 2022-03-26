@@ -3,9 +3,8 @@
   <div v-else>
     <div v-if="userCheck === false">
       <div>どのサークルに所属しているのかを登録しましたか？</div>
-      <div class="register-check" v-on:click="selectYes">はい</div>
-      /
-      <div class="register-check" v-on:click="selectNo">いいえ</div>
+      <button class="register-check" v-on:click="selectYes">はい</button>
+      <button class="register-check" v-on:click="selectNo">いいえ</button>
     </div>
     <div v-else-if="userCheck === true && registerCircleCheck == false">
       <div v-if="memberDataPushed">すでに登録完了しています</div>
