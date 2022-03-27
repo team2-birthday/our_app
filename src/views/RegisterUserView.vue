@@ -51,6 +51,7 @@ export default {
       emailNow: "",
       useridNow: "",
       userCircleRegister: [],
+      usernewComerCircle: [],
     }
   },
   methods: {
@@ -71,6 +72,7 @@ export default {
             userMail: this.emailNow,
             userId: this.useridNow,
             registerCircle: this.userCircleRegister,
+            newComerCircle: this.usernewComerCircle,
           })
         })
         .catch((error) => {

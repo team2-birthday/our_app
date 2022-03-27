@@ -79,7 +79,7 @@
         <select
           name="university"
           id="university"
-          v-on:click="selectCircle"
+          v-on:change="selectCircle"
           v-model="universityKey"
           required
         >
@@ -221,6 +221,8 @@ export default {
             this.userData.registerCircle.push({
               universityName: this.universityKey,
               circleName: this.circleKey.name,
+              schedule: this.circleKey.schedule,
+              text: this.circleKey.text,
             })
             this.circleKey.memberData.push({
               userName: this.userName,

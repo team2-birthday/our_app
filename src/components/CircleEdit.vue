@@ -21,13 +21,7 @@
           </div>
           <div class="detail">
             <div class="item">サークル名</div>
-            <input
-              type="text"
-              v-model="circleName"
-              placeholder="サークル名"
-              required
-            />
-            <div class="error-message">※ 入力必須です</div>
+            <div>{{ circleName }}</div>
           </div>
           <div class="detail">
             <div class="item">サークルの所属している人数</div>
@@ -48,34 +42,9 @@
           <div class="error-message">※ 入力必須です</div>
         </div>
         <div>
-          <div class="item">活動日程と活動場所</div>
-          <div>
-            <input type="date" v-model="schedule" required />
-            <input
-              type="text"
-              v-model="location"
-              placeholder="活動場所"
-              required
-            />
-            <div>
-              <button
-                v-on:click="activePush"
-                v-bind:disabled="inputCheck"
-                class="schedule-register-btn"
-              >
-                日程と場所登録
-              </button>
-            </div>
-            <div class="input-lack" v-bind:class="{ lackcheck: lackCheck }">
-              ※ 入力必須です
-            </div>
-          </div>
-          <div class="item">現在登録した日程とその日の活動場所（削除可能）</div>
+          <div class="item">登録した日程とその日の活動場所</div>
           <div v-for="(data, index) in activeData" v-bind:key="index">
             {{ data.date }}:{{ data.place }}
-            <button v-on:click="datePlaceDelete(index)" class="delete-btn">
-              削除
-            </button>
           </div>
         </div>
         <div>
@@ -161,20 +130,6 @@ export default {
     }
   },
   methods: {
-    activePush() {
-      if (this.schedule != "" && this.locaton != "") {
-        this.activeData.push({ date: this.schedule, place: this.location })
-        //昇順に並べる
-        this.activeData = [...this.activeData].sort(
-          (a, b) => new Date(a.date) - new Date(b.date)
-        )
-      }
-      this.schedule = ""
-      this.location = ""
-    },
-    datePlaceDelete(data) {
-      this.activeData.splice(data, 1)
-    },
     async memberDelete(member) {
       const user = await getDoc(
         doc(db, "userData", this.memberData[member].userId)
