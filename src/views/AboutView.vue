@@ -25,7 +25,7 @@
           </option>
         </select>
         <br />
-        <button v-on:click="search" v-for="univ">検索</button>
+        <button v-on:click="search">検索</button>
       </div>
       <div v-on:click="watchCenter">大学選択へ戻る</div>
     </div>
