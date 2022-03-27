@@ -195,7 +195,6 @@ export default {
           universityName: this.universityKey,
           circleName: this.circleName,
           schedule: this.activeData,
-          text: this.text,
         })
         this.memberData.push({
           userName: this.userName,

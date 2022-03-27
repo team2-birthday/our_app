@@ -191,10 +191,6 @@ export default {
         this.text = ""
         if (this.userDeletecount > 0) {
           for (let i = 0; i < this.userDeletecount; i++) {
-            console.log(
-              this.userDeleteData[i].userId,
-              this.userDeleteData[i].registerCircle
-            )
             await updateDoc(
               doc(db, "userData", this.userDeleteData[i].userId),
               {
