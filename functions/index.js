@@ -39,12 +39,25 @@ const transport = {
   auth,
 }
 const transporter = nodemailer.createTransport(transport)
-const getDocList = async function (docList) {
+const getDocList = async function () {
   const booksCollection = await db.collection("userData").get()
+  let sendOptionList = ["あたま"]
   booksCollection.forEach((doc) => {
     // console.log(doc.id, "=>", doc.data())
-    docList.push(doc)
+    for (let j = 0; j < doc.newComerCircle.length(); j++) {
+      let date = doc.newComerCircle[j].schedule[0].date
+      let cal_date = date.split("-").join("")
+      if (
+        Number(cal_date) - Number(today_string) > 0 &&
+        Number(cal_date) - Number(today_string) < 4
+      ) {
+        sendOptionList.push(
+          mailOptions(doc.userMail, doc.newComerCircle[j].circleName, date)
+        )
+      }
+    }
   })
+  console.log(sendOptionList)
 }
 
 // const get_activeCircle = async function () {
@@ -84,19 +97,20 @@ const doPost = () => {
       }
     }
   }
-  for (let i = 0; i < sendOptionList.length; i++) {
-    transporter.sendMail(sendOptionList[i], (err, response) => {
-      console.log(err || response)
-    })
-  }
+  console.log(docList)
+  // for (let i = 0; i < sendOptionList.length; i++) {
+  //   transporter.sendMail(sendOptionList[i], (err, response) => {
+  //     console.log(err || response)
+  //   })
+  // }
 }
 
 exports.sendMail = functions.https.onCall(async (data, context) => {
-  doPost()
+  getDocList()
 })
 
 exports.sendMail_auto = functions.pubsub
   .schedule("every 1 days")
   .onRun((context) => {
-    doPost()
+    const x = doPost()
   })
