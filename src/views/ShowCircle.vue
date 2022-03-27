@@ -10,7 +10,10 @@
       </div>
       <div
         v-on:click="favoriteButtonClick(index)"
-        v-bind:class="favoriteIconData[index].favoriteFont"
+        v-bind:class="{
+          'favorite-btn-on': favoriteFont[index],
+          'favorite-btn-off': !favoriteFont[index],
+        }"
       >
         ★
       </div>
@@ -35,7 +38,7 @@ export default {
   data() {
     return {
       circle_data: [],
-      favoriteIconData: [], //お気に入りボタンを状態をサークルの数だけ生成し、独立させる
+      favoriteFont: [], //お気に入りボタンを状態をサークルの数だけ生成し、独立させる
       userData: null, //登録したユーザー情報を格納する変数
       universityName: "", //現在どこの大学なのかを格納する変数
     }
@@ -45,15 +48,8 @@ export default {
       if (this.userName !== "" && this.email !== "" && this.userId !== "") {
         const user = await getDoc(doc(db, "userData", this.userId))
         this.userData = user.data()
-        if (this.favoriteIconData[index].favoriteState === false) {
-          this.favoriteIconData[index].favoriteState =
-            !this.favoriteIconData[index].favoriteState
-        }
-        if (
-          this.favoriteIconData[index].favoriteState &&
-          this.favoriteIconData[index].favoriteFont === "favorite-btn-off"
-        ) {
-          this.favoriteIconData[index].favoriteFont = "favorite-btn-on"
+        if (this.favoriteFont[index] === false) {
+          this.favoriteFont[index] = !this.favoriteFont[index]
           this.userData.newComerCircle.push({
             circleName: this.circle_data[index].name,
             schedule: this.circle_data[index].schedule,
@@ -62,9 +58,9 @@ export default {
           await updateDoc(doc(db, "userData", this.userId), {
             newComerCircle: this.userData.newComerCircle,
           })
+        } else {
+          alert("ユーザーログインしてください")
         }
-      } else {
-        alert("ユーザーログインしてください")
       }
     },
   },
@@ -73,7 +69,7 @@ export default {
     // 逆にページでログアウトされた場合サークルのお気に入りボタンをすべてoffにする
     async userId() {
       //一旦アイコンの状態を初期化
-      this.favoriteIconData.splice(0)
+      this.favoriteFont.splice(0)
       if (this.userName !== "" && this.email !== "" && this.userId !== "") {
         const user = await getDoc(doc(db, "userData", this.userId))
         this.userData = user.data()
@@ -87,39 +83,27 @@ export default {
                 this.universityName ===
                   this.userData.newComerCircle[j].universityName
               ) {
-                this.favoriteIconData.push({
-                  favoriteState: true,
-                  favoriteFont: "favorite-btn-on",
-                })
+                this.favoriteFont.push(true)
                 break
               } else if (j === this.userData.newComerCircle.length - 1) {
-                this.favoriteIconData.push({
-                  favoriteState: false,
-                  favoriteFont: "favorite-btn-off",
-                })
+                this.favoriteFont.push(false)
               }
             }
           }
         } else {
           for (let k = 0; k < this.circle_data.length; k++) {
-            this.favoriteIconData.push({
-              favoriteState: false,
-              favoriteFont: "favorite-btn-off",
-            })
+            this.favoriteFont.push(false)
           }
         }
       } else {
         for (let k = 0; k < this.circle_data.length; k++) {
-          this.favoriteIconData.push({
-            favoriteState: false,
-            favoriteFont: "favorite-btn-off",
-          })
+          this.favoriteFont.push(false)
         }
       }
     },
   },
   created: async function () {
-    this.favoriteIconData.splice(0)
+    this.favoriteFont.splice(0)
     const id = "愛国学園大学"
     this.universityName = id
     const snapshot = await getDocs(collection(db, "univ", id, "circle"))
@@ -142,33 +126,21 @@ export default {
               this.universityName ===
                 this.userData.newComerCircle[j].universityName
             ) {
-              this.favoriteIconData.push({
-                favoriteState: true,
-                favoriteFont: "favorite-btn-on",
-              })
+              this.favoriteFont.push(true)
               break
             } else if (j === this.userData.newComerCircle.length - 1) {
-              this.favoriteIconData.push({
-                favoriteState: false,
-                favoriteFont: "favorite-btn-off",
-              })
+              this.favoriteFont.push(false)
             }
           }
         }
       } else {
         for (let k = 0; k < this.circle_data.length; k++) {
-          this.favoriteIconData.push({
-            favoriteState: false,
-            favoriteFont: "favorite-btn-off",
-          })
+          this.favoriteFont.push(false)
         }
       }
     } else {
       for (let k = 0; k < this.circle_data.length; k++) {
-        this.favoriteIconData.push({
-          favoriteState: false,
-          favoriteFont: "favorite-btn-off",
-        })
+        this.favoriteFont.push(false)
       }
     }
   },
