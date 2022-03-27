@@ -4,7 +4,12 @@ const nodemailer = require("nodemailer")
 const functions = require("firebase-functions")
 // const { stringifyQuery } = require("vue-router")
 
-import { mymail, authclientid, authsecretid, authrefreshToken } from "./my-data"
+const {
+  mymail,
+  authclientid,
+  authsecretid,
+  authrefreshToken,
+} = require("./my-data")
 const gmailEmail = mymail
 
 const today = new Date()
