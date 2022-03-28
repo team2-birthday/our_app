@@ -43,6 +43,7 @@ const routes = [
     path: "/showCircle",
     name: "showCircle",
     component: ShowCircle,
+    props: true,
   },
   {
     path: "/circleLogin",

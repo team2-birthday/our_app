@@ -1,34 +1,27 @@
 <template>
-  <head>
-    <link
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      rel="stylesheet"
-    />
-    <!--アイコン画像にリンク-->
-  </head>
-  <div class="register-user" v-if="userName.length === 0 && email.length === 0">
-    <div>ログインしていないユーザーはまず登録お願いします</div>
-    <div>パスワードを決めて下さい</div>
-    <input
-      v-bind:type="typeChange"
-      v-model="password"
-      minlength="8"
-      maxlength="15"
-      size="15"
-      pattern="[a-zA-Z0-9]+"
-      title="パスワードは(8~15文字)半角英数字で入力してください。"
-      required
-    />
-    <i id="icon" v-bind:class="iconType" v-on:click="passwordCheck"></i
-    ><!--アイコン表示場所-->
-    <div class="error-message">※ 入力必須です</div>
-    <div>
-      <button v-on:click="registerUser">登録</button>
+  <div>
+    <div
+      class="register-user"
+      v-if="userName.length === 0 && email.length === 0"
+    >
+      <div v-if="registerUserComplete === false">
+        <div>ログインしていないユーザーはまず登録お願いします</div>
+        <div>
+          <button v-on:click="registerUser" class="register-user-btn">
+            登録
+          </button>
+        </div>
+      </div>
+      <div v-else>
+        <div>{{ userNameNow }}さん登録完了しました。</div>
+        <div>下のリンクから戻って下さい。</div>
+        <router-link to="/" class="return-link">Home</router-link>
+      </div>
     </div>
-  </div>
-  <div v-else class="register-user">
-    <div>現在ログイン中です</div>
-    <router-link to="/">Home</router-link>
+    <div v-else class="register-user">
+      <div>現在ログイン中です</div>
+      <router-link to="/" class="return-link">Home</router-link>
+    </div>
   </div>
 </template>
 
@@ -52,33 +45,21 @@ export default {
   },
   data() {
     return {
-      password: "", //編集時に入力するパスワードの設定に使う変数
-      typeChange: "password", //inputの属性を管理する変数
+      registerUserComplete: false, //ユーザー登録が完了したかどうかを判断する変数
       typeChangeCheck: true, //input属性を切り替える変数
-      iconType: "fas fa-eye",
       userNameNow: "",
       emailNow: "",
       useridNow: "",
       userCircleRegister: [],
+      usernewComerCircle: [],
     }
   },
   methods: {
-    //パスワードの確認を行えるようにする関数
-    passwordCheck() {
-      this.typeChangeCheck = !this.typeChangeCheck
-      if (this.typeChangeCheck) {
-        this.typeChange = "password"
-        this.iconType = "fas fa-eye"
-      } else {
-        this.typeChange = "text"
-        this.iconType = "fas fa-eye-slash"
-      }
-    },
     //ユーザー登録を行う関数
-    registerUser() {
+    async registerUser() {
       const provider = new GoogleAuthProvider()
       const auth = getAuth()
-      signInWithPopup(auth, provider)
+      await signInWithPopup(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result)
           credential.accessToken
@@ -90,8 +71,8 @@ export default {
             userName: this.userNameNow,
             userMail: this.emailNow,
             userId: this.useridNow,
-            password: this.password,
             registerCircle: this.userCircleRegister,
+            newComerCircle: this.usernewComerCircle,
           })
         })
         .catch((error) => {
@@ -100,7 +81,7 @@ export default {
           error.email
           GoogleAuthProvider.credentialFromError(error)
         })
-      signOut(auth)
+      await signOut(auth)
         .then(() => {
           // Sign-out successful.
         })
@@ -108,6 +89,7 @@ export default {
           // An error happened.
           console.error(error)
         })
+      this.registerUserComplete = true
     },
   },
 }
@@ -115,7 +97,15 @@ export default {
 
 <style>
 .register-user {
-  padding-top: 250px;
+  padding-top: 2%;
+  font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
+    "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+}
+.return-link {
+  font-size: 40px;
+  background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .error-message {
   font-size: 12px;
@@ -125,5 +115,18 @@ export default {
 /* :invalid時だけ隣の要素を表示 */
 input:invalid + .error-message {
   display: block;
+}
+.register-user-btn {
+  margin-top: 0.5%;
+  display: inline-block;
+  padding: 7px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(to right, #0acffe 0%, #495aff 100%);
+  transition: 0.4s;
+}
+.register-user-btn:hover {
+  background-image: linear-gradient(to right, #0acffe 0%, #495aff 100%);
 }
 </style>

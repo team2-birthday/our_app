@@ -6,6 +6,7 @@
     v-bind:email="email"
     v-bind:userId="userId"
     v-on:circleEditing="circleEditing"
+    v-on:myPageStates="myPageStates"
   ></CircleEdit>
 </template>
 
@@ -38,6 +39,9 @@ export default {
   methods: {
     circleEditing(circleEditCheck) {
       this.$emit("circleEditing", circleEditCheck)
+    },
+    myPageStates(open) {
+      this.$emit("myPageStates", open)
     },
   },
 }
