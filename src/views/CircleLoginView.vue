@@ -1,42 +1,33 @@
 <template>
-  <main id="app">
-    <div v-if="center" key="center">
-      <p>サークル一覧</p>
-      <div v-on:click="watchLeft">大学選択へ</div>
-    </div>
-
-    <div v-if="choice" key="left">
-      <p>大学を選択する</p>
-      <div>
-        <div>学校名</div>
-        <select
-          name="university"
-          id="university"
-          v-model="universityKey"
-          required
-        >
-          <option value="">--学校名を選んでください--</option>
-          <option
-            v-for="(university, index) in universityList"
-            v-bind:key="index"
-            v-bind:value="university"
-          >
-            {{ university }}
-          </option>
-        </select>
-        <br />
-        <button v-on:click="search">検索</button>
-      </div>
-      <div v-on:click="watchCenter">大学選択へ戻る</div>
-    </div>
-  </main>
+  <CircleLogin
+    v-bind:universityList="universityList"
+    v-bind:userName="userName"
+    v-bind:email="email"
+    v-bind:userId="userId"
+    v-on:circleLoginData="circleLoginDataMove"
+  ></CircleLogin>
 </template>
 
 <script>
+import CircleLogin from "@/components/CircleLogin.vue"
 export default {
+  name: "CircleLoginView",
+  components: {
+    CircleLogin,
+  },
+  props: {
+    userName: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    userId: {
+      type: String,
+    },
+  },
   data() {
     return {
-      choice: false,
       universityList: [
         "愛国学園大学",
         "愛知大学",
@@ -251,7 +242,7 @@ export default {
         "金城学院大学",
         "釧路公立大学",
         "国立音楽大学",
-        "熊本大学　国",
+        "熊本大学",
         "熊本学園大学",
         "熊本県立大学",
         "熊本保健科学大学",
@@ -837,14 +828,16 @@ export default {
         "稚内北星学園大学",
         "和洋女子大学",
       ],
-      universityKey: "", //現在どこの大学がselectされているのかを示す変数
     }
   },
   methods: {
-    watchLeft: function () {
-      this.center = false
-      this.left = true
-      this.right = false
+    circleLoginDataMove(circleLoginState, circleLoginName, selectUniversity) {
+      this.$emit(
+        "circleLoginData",
+        circleLoginState,
+        circleLoginName,
+        selectUniversity
+      )
     },
   },
 }
