@@ -8,14 +8,16 @@
       <div v-for="(plan, index) in data.schedule" v-bind:key="index">
         {{ plan.date }}:{{ plan.place }}
       </div>
-      <div
-        v-on:click="favoriteButtonClick(index)"
-        v-bind:class="{
-          'favorite-btn-on': favoriteFont[index],
-          'favorite-btn-off': !favoriteFont[index],
-        }"
-      >
-        ★
+      <div class="favorite-btn">
+        <button
+          v-on:click="favoriteButtonClick(index)"
+          v-bind:class="{
+            'favorite-btn-on': favoriteFont[index],
+            'favorite-btn-off': !favoriteFont[index],
+          }"
+        >
+          ★
+        </button>
       </div>
     </div>
   </div>
@@ -59,8 +61,23 @@ export default {
             newComerCircle: this.userData.newComerCircle,
           })
         } else {
-          alert("ユーザーログインしてください")
+          this.favoriteFont[index] = !this.favoriteFont[index]
+          for (let i = 0; i < this.userData.newComerCircle.length; i++) {
+            if (
+              this.userData.newComerCircle[i].universityName ===
+                this.universityName &&
+              this.userData.newComerCircle[i].circleName ===
+                this.circle_data[index].name
+            ) {
+              this.userData.newComerCircle.splice(i, 1)
+              await updateDoc(doc(db, "userData", this.userId), {
+                newComerCircle: this.userData.newComerCircle,
+              })
+            }
+          }
         }
+      } else {
+        alert("ユーザーログインしてください")
       }
     },
   },
@@ -161,15 +178,23 @@ export default {
   margin-bottom: 3%;
 }
 
-.favorite-btn-on {
+.favorite-btn {
   text-align: right;
-  font-size: 20px;
-  color: rgb(0, 195, 255);
+}
+
+.favorite-btn-on {
+  font-size: 25px;
+  background: transparent;
+  border: none;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(135deg, #fdeb71 10%, #f8d800 100%);
 }
 
 .favorite-btn-off {
-  text-align: right;
-  font-size: 20px;
+  background: transparent;
+  border: none;
+  font-size: 25px;
   color: gray;
 }
 </style>
