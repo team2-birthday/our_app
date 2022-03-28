@@ -44,7 +44,7 @@ const transport = {
 
 const transporter = nodemailer.createTransport(transport) //nodemailerを設定を反映して使用する
 
-const getDocList = async function () {
+const doPost = async function () {
   const booksCollection = await db.collection("userData").get()
   let sendOptionList = [] //送信対象となった人だけを格納するリストを作る
   booksCollection.forEach((doc) => {
@@ -98,12 +98,12 @@ const mailOptions = (email, circleName, date) => {
 
 exports.sendMail = functions.https.onCall(async (data, context) => {
   //呼び出しで使える形式にしている
-  getDocList()
+  doPost()
 })
 
-exports.sendMail_auto = functions.pubsub
-  .schedule("every 1 days")
+exports.sendMailAuto = functions
+  .region("asia-northeast1")
+  .pubsub.schedule("every 1 days")
   .onRun((context) => {
-    //1日ごとに送信されるようにしている
-    getDocList()
+    doPost()
   })
