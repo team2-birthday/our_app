@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="login-prodact-name">
-      <div class="prodact-name">プロダクト名</div>
+      <div class="prodact-name">俺らのファインダス</div>
       <div class="router-link">
         <nav>
           <router-link to="/">Home</router-link>
@@ -56,6 +56,8 @@
     v-on:myPageStates="myPageStates"
     v-on:circleEditing="circleEditing"
     v-on:circleLoginData="circleLoginDataMove"
+    v-on:showCircle="showCircle"
+    v-bind:searchUniversity="searchUniversity"
     v-bind:circleLoginName="circleLoginName"
     v-bind:circleLogin="circleLogin"
     v-bind:universityName="universityName"
@@ -84,6 +86,7 @@ export default {
       circleLoginName: "", //どこのサークルにログインしたかを表示する変数
       universityName: "", //どこの大学なのかを示す変数
       myPageOpen: false, //myPage開いている間はユーザーログアウトさせないようにするための変数
+      searchUniversity: "", //どこの大学のサークル一覧をみるのかを決める変数
     }
   },
   methods: {
@@ -91,6 +94,9 @@ export default {
       this.userName = displayName
       this.email = emailAddress
       this.userId = uid
+    },
+    showCircle(universityName) {
+      this.searchUniversity = universityName
     },
     circleLoginDataMove(
       currentCircleLogin,

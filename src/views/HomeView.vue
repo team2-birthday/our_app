@@ -30,15 +30,14 @@
         </option>
       </select>
       <br />
-      <button v-on:click="search">検索</button>
+      <div class="search-btn">
+        <router-link to="/showcircle" v-on:click="search">検索</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "../firebase.js"
-
 export default {
   data() {
     return {
@@ -846,18 +845,20 @@ export default {
       universityKey: "", //現在どこの大学がselectされているのかを示す変数
     }
   },
-  methods: {},
-  created: async function () {
-    const id = "福岡大学"
-    const snapshot = await getDocs(collection(db, "univ", id, "circle"))
-    await snapshot.forEach((doc) => {
-      this.circle_data.push({
-        id: doc.id,
-        ...doc.data(),
-      })
-    })
+  methods: {
+    search() {
+      this.$emit("showCircle", this.universityKey)
+    },
   },
 }
 </script>
 
-<style></style>
+<style>
+.search-btn {
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+</style>
