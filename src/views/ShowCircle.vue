@@ -1,23 +1,44 @@
 <template>
-  <div class="show-circle">
-    <div class="block" v-for="(data, index) in circle_data" v-bind:key="index">
-      <div class="name">{{ data.name }}</div>
-      <div>人数：{{ data.number }}人</div>
-      <div>{{ data.text }}</div>
-      <div>開催日程：場所</div>
-      <div v-for="(plan, index) in data.schedule" v-bind:key="index">
-        {{ plan.date }}:{{ plan.place }}
+  <div v-if="searchUniversity.length === 0">
+    <div class="show-circle">
+      <div>下のリンクから大学を選択してください</div>
+      <router-link to="/" class="return-link">Home</router-link>
+    </div>
+  </div>
+  <div v-else>
+    <div v-if="circle_data.length === 0">
+      <div class="show-circle">
+        <div>この大学のサークル情報はございません</div>
+        <div>下のリンクから戻ってください</div>
+        <router-link to="/" class="return-link">Home</router-link>
       </div>
-      <div class="favorite-btn">
-        <button
-          v-on:click="favoriteButtonClick(index)"
-          v-bind:class="{
-            'favorite-btn-on': favoriteFont[index],
-            'favorite-btn-off': !favoriteFont[index],
-          }"
+    </div>
+    <div v-else>
+      <div class="show-circle">
+        <div
+          class="block"
+          v-for="(data, index) in circle_data"
+          v-bind:key="index"
         >
-          ★
-        </button>
+          <div class="name">{{ data.name }}</div>
+          <div>人数：{{ data.number }}人</div>
+          <div>{{ data.text }}</div>
+          <div>開催日程：場所</div>
+          <div v-for="(plan, index) in data.schedule" v-bind:key="index">
+            {{ plan.date }}:{{ plan.place }}
+          </div>
+          <div class="favorite-btn">
+            <button
+              v-on:click="favoriteButtonClick(index)"
+              v-bind:class="{
+                'favorite-btn-on': favoriteFont[index],
+                'favorite-btn-off': !favoriteFont[index],
+              }"
+            >
+              ★
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -36,13 +57,15 @@ export default {
     userId: {
       type: String,
     },
+    searchUniversity: {
+      type: String,
+    },
   },
   data() {
     return {
       circle_data: [],
       favoriteFont: [], //お気に入りボタンを状態をサークルの数だけ生成し、独立させる
       userData: null, //登録したユーザー情報を格納する変数
-      universityName: "", //現在どこの大学なのかを格納する変数
     }
   },
   methods: {
@@ -55,7 +78,7 @@ export default {
           this.userData.newComerCircle.push({
             circleName: this.circle_data[index].name,
             schedule: this.circle_data[index].schedule,
-            universityName: this.universityName,
+            universityName: this.searchUniversity,
           })
           await updateDoc(doc(db, "userData", this.userId), {
             newComerCircle: this.userData.newComerCircle,
@@ -65,7 +88,7 @@ export default {
           for (let i = 0; i < this.userData.newComerCircle.length; i++) {
             if (
               this.userData.newComerCircle[i].universityName ===
-                this.universityName &&
+                this.searchUniversity &&
               this.userData.newComerCircle[i].circleName ===
                 this.circle_data[index].name
             ) {
@@ -97,7 +120,7 @@ export default {
               if (
                 this.circle_data[i].name ===
                   this.userData.newComerCircle[j].circleName &&
-                this.universityName ===
+                this.searchUniversity ===
                   this.userData.newComerCircle[j].universityName
               ) {
                 this.favoriteFont.push(true)
@@ -121,33 +144,39 @@ export default {
   },
   created: async function () {
     this.favoriteFont.splice(0)
-    const id = "愛国学園大学"
-    this.universityName = id
-    const snapshot = await getDocs(collection(db, "univ", id, "circle"))
-    await snapshot.forEach((doc) => {
-      this.circle_data.push({
-        id: doc.id,
-        ...doc.data(),
+    if (this.searchUniversity !== "") {
+      const snapshot = await getDocs(
+        collection(db, "univ", this.searchUniversity, "circle")
+      )
+      await snapshot.forEach((doc) => {
+        this.circle_data.push({
+          id: doc.id,
+          ...doc.data(),
+        })
       })
-    })
-    if (this.userName !== "" && this.email !== "" && this.userId !== "") {
-      const user = await getDoc(doc(db, "userData", this.userId))
-      this.userData = user.data()
-      // 既にお気に入りに登録していたらお気に入りボタンをonにしておく
-      if (this.userData.newComerCircle.length > 0) {
-        for (let i = 0; i < this.circle_data.length; i++) {
-          for (let j = 0; j < this.userData.newComerCircle.length; j++) {
-            if (
-              this.circle_data[i].name ===
-                this.userData.newComerCircle[j].circleName &&
-              this.universityName ===
-                this.userData.newComerCircle[j].universityName
-            ) {
-              this.favoriteFont.push(true)
-              break
-            } else if (j === this.userData.newComerCircle.length - 1) {
-              this.favoriteFont.push(false)
+      if (this.userName !== "" && this.email !== "" && this.userId !== "") {
+        const user = await getDoc(doc(db, "userData", this.userId))
+        this.userData = user.data()
+        // 既にお気に入りに登録していたらお気に入りボタンをonにしておく
+        if (this.userData.newComerCircle.length > 0) {
+          for (let i = 0; i < this.circle_data.length; i++) {
+            for (let j = 0; j < this.userData.newComerCircle.length; j++) {
+              if (
+                this.circle_data[i].name ===
+                  this.userData.newComerCircle[j].circleName &&
+                this.searchUniversity ===
+                  this.userData.newComerCircle[j].universityName
+              ) {
+                this.favoriteFont.push(true)
+                break
+              } else if (j === this.userData.newComerCircle.length - 1) {
+                this.favoriteFont.push(false)
+              }
             }
+          }
+        } else {
+          for (let k = 0; k < this.circle_data.length; k++) {
+            this.favoriteFont.push(false)
           }
         }
       } else {
@@ -155,19 +184,21 @@ export default {
           this.favoriteFont.push(false)
         }
       }
-    } else {
-      for (let k = 0; k < this.circle_data.length; k++) {
-        this.favoriteFont.push(false)
-      }
     }
   },
 }
 </script>
 <style>
+.return-link {
+  font-size: 40px;
+  background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .show-circle {
   font-family: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "游明朝",
     "Yu Mincho", "游明朝体", "YuMincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
-  padding-top: 15%;
 }
 
 .block {
