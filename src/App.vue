@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="login-prodact-name">
-      <div class="prodact-name">プロダクト名</div>
+      <div class="prodact-name">俺らのファインダス</div>
       <div class="router-link">
         <nav>
           <router-link to="/">Home</router-link>
